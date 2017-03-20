@@ -59,7 +59,7 @@ name_entry = ttk.Entry(mainframe, width=10, textvariable=name)
 name_entry.grid(column=2, row=1, sticky=(W, E))
 
 ttk.Label(mainframe, textvariable=answer1).grid(column=2, row=2)
-ttk.Button(mainframe, text="Calculate Surname", command=returnSurname).grid(column=1, row=2, sticky=W)
+ttk.Button(mainframe, text="Lookup Surname", command=returnSurname).grid(column=1, row=2, sticky=W)
 ttk.Label(mainframe, text="Please Input Information: ").grid(column=1, row=1, sticky=W)
 ttk.Label(mainframe, text="Find a Surname from a Forename.").grid(column=1, row=3, sticky=W)
 
