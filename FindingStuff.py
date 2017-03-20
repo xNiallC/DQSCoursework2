@@ -1,5 +1,9 @@
-from Tkinter import *
-import ttk
+try:
+    from Tkinter import *
+    import ttk
+except:
+    from tkinter import *
+    from tkinter import ttk
 import csv
 
 def returnSurname(*args):
