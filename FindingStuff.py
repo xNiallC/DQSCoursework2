@@ -50,6 +50,12 @@ mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
+#attempt at making a second frame
+secondFrame = ttk.Frame(root, padding="3 3 12 12")
+secondFrame.grid(column=0, row=0, sticky=(N, W, E, S))
+secondFrame.columnconfigure(0, weight=1)
+secondFrame.rowconfigure(0, weight=1)
+
 name = StringVar()
 answer1 = StringVar()
 answer2 = StringVar()
