@@ -4,6 +4,7 @@ try:
 except:
     from tkinter import *
     from tkinter import ttk
+import tkMessageBox
 import csv
 import random
 
@@ -72,11 +73,17 @@ def assignTutor(tutorList):
             # If this number is equal to or exceeds their quota, we delete them from the list.
             # Else the while loop goes again until their are no tutors left.
             if numberOfStudentsWithTutor >= int(randomTutor[1]):
+                tkMessageBox.showinfo("Warning", "Tutor's quota is full, press OK to search again.")
                 del newTempDict[randomTutor[0]]
             else:
             # TODO: Nothing is actually written to the csv yet, I just completed the algorithm. Next step is to write the tutor name to the CSV.
-                print("success")
-                break
+                result = tkMessageBox.askquestion("Confirm Assignment", "Assigning tutor " + randomTutor[0] + " Is this okay?")
+                if result == 'yes':
+                    print("success")
+                    break
+                else:
+                    print("failed")
+                    break
 
             # TODO: I'm not sure what she wants to happen assuming there are no tutors left at all.
             # Maybe it just straight up fails and the student is fucked? Who knows.
