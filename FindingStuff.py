@@ -52,12 +52,12 @@ import random
 
 
 
-def assignTutor(tutorList):
+def assignTutor(tutorList, studentName2):
     with open('MOCK_DATA.csv') as csvfile:
         reader = csv.reader(csvfile)
 
         newTempDict = tutorList
-
+        studentName = studentName2
         # This is where it got harder.
         # The while loop checks that the list of available tutors is not 0, which we come to later.
         while len(newTempDict) != 0:
@@ -80,7 +80,7 @@ def assignTutor(tutorList):
                 del newTempDict[randomTutor[0]]
             else:
             # TODO: Nothing is actually written to the csv yet, I just completed the algorithm. Next step is to write the tutor name to the CSV.
-                result = messagebox.askquestion("Tutor Assignment", "Assigning tutor " + randomTutor[0] + " Is this okay?")
+                result = messagebox.askquestion("Tutor Assignment", "Assigning tutor " + randomTutor[0] + " to " + studentName + ". Is this okay?")
                 if result == 'yes':
                     print("success")
                     break
@@ -123,11 +123,12 @@ def returnStudent(*args):
                 # Initialise variables
                 tempList = {}
                 tempStudent = ""
-
+                studentName2 = ""
                 # Find a student from a number and assign its subject to the tempStudent variable
                 for row in reader:
                     if (nameinput == row[2]):
                         tempStudent = row[3]
+                        studentName2 = row[0] + " " + row[1]
                     else:
                         answer1.set("--> Student Not Found")
                         break
@@ -144,9 +145,9 @@ def returnStudent(*args):
                     for row in tutorReader:
                         tempList[row[0] + " " + row[1]] = row[4]
                     # Run assigning function
-                    assignTutor(tempList)
+                    assignTutor(tempList, studentName2)
                 else:
-                    assignTutor(tempList)
+                    assignTutor(tempList, studentName2)
 
 def returnTutor(*args):
     with open('MOCK_DATA.csv') as csvfile:
