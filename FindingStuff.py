@@ -145,31 +145,53 @@ def returnStudent(*args):
                 else:
                     assignTutor(tempList)
 
-def returnNumber(*args):
+def returnTutor(*args):
     with open('MOCK_DATA.csv') as csvfile:
         reader = csv.reader(csvfile)
 
-        nameinput = str(name.get())
+        nameinput = str(tutorName.get())
 
-        if not nameinput.isdigit():
+        action = comboValueTutor.get()
+
+        # Getting info for tutor's srudents
+        if action == "Get Info":
+            # Initialise variables
+            tempStudents = []
+
+            emptyString = ""
+
             for row in reader:
-                if nameinput.lower() == row[0].lower():
-                    answer2.set("--> " + row[2])
-                    break
-            else:
-                answer2.set("--> " + "Name not found.")
-        else:
-            for row in reader:
-                if nameinput == row[2]:
-                    answer2.set("--> " + row[0] + " " + row[1])
-                    break
-            else:
-                answer2.set("--> " + "Number not found.")
+                # As the tutor name is all one word, first and last, we split into 2 for sake of easy searching
+                nameSplit = row[4].split(" ")
 
+                # Check stuff
+                if (nameinput.lower() == str(nameSplit[0]).lower()) or (nameinput.lower() == str(nameSplit[1]).lower()) or (nameinput.lower() == row[4]):
+                    # Append to empty list a string of the students name nicely formatted
+                    tempStudents.append(row[0] + " " + row[1])
+                else:
+                    answer2.set("--> " + "Tutor not found/has no students.")
 
+            # We like nice formatting, so if there's only 1 student, correct grammar is used.
+            if len(tempStudents) == 1:
+                # For each student in list, add to a string for printing
+                for i in tempStudents:
+                    emptyString += i
+                # Message boxes for easy to read information
+                tkMessageBox.showinfo("Tutor Info", "Tutor has following Student: \n" + emptyString)
+            elif len(tempStudents) > 1:
+                # In order to correctly format commas, we take instances for number of iterations
+                instances = 0
+                for i in tempStudents:
+                    # Checks if it's the last name, and if so don't put a comma
+                    if instances == (len(tempStudents) - 1):
+                        emptyString += (i + "\n")
+                    else:
+                        emptyString += (i + ", \n")
+                    instances += 1
+                tkMessageBox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
 
 root = Tk()
-root.title("Get Surname")
+root.title("Team 11")
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -177,13 +199,18 @@ mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
 comboValue = StringVar()
+comboValueTutor = StringVar()
 studentName = StringVar()
+tutorName = StringVar()
 answer1 = StringVar()
 answer2 = StringVar()
 
 
 name_entry = ttk.Entry(mainframe, width=10, textvariable=studentName)
 name_entry.grid(column=2, row=1, sticky=(W, E))
+
+tutor_entry = ttk.Entry(mainframe, width=10, textvariable=tutorName)
+tutor_entry.grid(column=2, row=3, sticky=(W, E))
 
 ttk.Label(mainframe, textvariable=answer1).grid(column=2, row=2)
 #ttk.Button(mainframe, text="Calculate Surname", command=returnStudent).grid(column=1, row=2, sticky=W)
@@ -195,16 +222,22 @@ studentCombo.current(0)
 studentCombo.grid(column=1, row=2, sticky=W)
 
 ttk.Label(mainframe, text="Please Input Student Name/Number: ").grid(column=1, row=1, sticky=W)
-ttk.Label(mainframe, text="Find a Surname from a Forename.").grid(column=1, row=3, sticky=W)
+ttk.Label(mainframe, text="Please Input Tutor Name/Number: ").grid(column=1, row=3, sticky=W)
 
 ttk.Label(mainframe, textvariable=answer2).grid(column=2, row=4)
-ttk.Button(mainframe, text="Calculate Number/Name", command=returnNumber).grid(column=1, row=4, sticky=W)
-ttk.Label(mainframe, text="Find a Number from Forename, or vice versa.").grid(column=1, row=5, sticky=W)
+#ttk.Button(mainframe, text="Calculate Number/Name", command=returnNumber).grid(column=1, row=4, sticky=W)
+
+tutorCombo = ttk.Combobox(mainframe, textvariable=comboValueTutor, state='readonly')
+tutorCombo.bind("<<ComboboxSelected>>", returnTutor)
+tutorCombo['values'] = ('Get Info', 'View Quota')
+tutorCombo.current(0)
+tutorCombo.grid(column=1, row=4, sticky=W)
 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
 name_entry.focus()
-root.bind('<Return>', returnStudent)
+root.bind('<Return>', returnStudent, add="+")
+root.bind('<Return>', returnTutor, add="+")
 
 root.mainloop()
