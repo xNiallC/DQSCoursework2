@@ -5,23 +5,67 @@ except:
     from tkinter import *
     from tkinter import ttk
 import csv
+import random
+
+def assignTutor(tutorList):
+    with open('MOCK_DATA.csv') as csvfile:
+        reader = csv.reader(csvfile)
+
+        newTempDict = tutorList
+
+        while len(newTempDict) != 0:
+            randomTutor = random.choice(list(tutorList.items()))
+            numberOfStudentsWithTutor = 0
+            for row in reader:
+                if row[4] == randomTutor[0]:
+                    numberOfStudentsWithTutor += 1
+            if numberOfStudentsWithTutor >= int(randomTutor[1]):
+                del newTempDict[randomTutor[0]]
+            else:
+                print("success")
+                break
+
 
 def returnStudent(*args):
     # Open CSV File
-    with open('MOCK_DATA.csv') as csvfile:
-        # Variable names
-        reader = csv.reader(csvfile)
+    with open('MOCK_DATA.csv', 'r+') as csvfile:
+        with open('MOCK_TUTORS.csv', 'r+') as tutorscsv:
+            # Variable names
+            tutorReader = csv.reader(tutorscsv)
+            reader = csv.reader(csvfile)
 
-        nameinput = str(studentName.get()).lower()
-        action = comboValue.get()
+            nameinput = str(studentName.get()).lower()
+            action = comboValue.get()
 
-        if action == "Get Info":
-            for row in reader:
-                if nameinput == row[0].lower():
-                    answer1.set("--> " + row[1])
-                    break
+            if action == "Get Info":
+                for row in reader:
+                    if (nameinput == row[0].lower()) or (nameinput == row[1].lower()):
+                        answer1.set("--> " + row[0] + " " + row[1] + " " + row[2])
+                        break
+                    elif nameinput == row[2]:
+                        answer1.set("--> " + row[0] + " " + row[1])
+                        break
+                    else:
+                        answer1.set("--> " + "Student not found.")
+
+            if action == "Assign Student":
+                tempList = {}
+                tempStudent = ""
+                for row in reader:
+                    if (nameinput == row[2]):
+                        tempStudent = row[3]
+                    else:
+                        answer1.set("--> Student Not Found")
+                        break
+                for row in tutorReader:
+                    if tempStudent == row[3]:
+                        tempList[row[0] + " " + row[1]] = row[4]
+                if len(tempList) == 0:
+                    for row in tutorReader:
+                        tempList[row[0] + " " + row[1]] = row[4]
+                    assignTutor(tempList)
                 else:
-                    answer1.set("--> " + "Name not found.")
+                    assignTutor(tempList)
 
 def returnNumber(*args):
     with open('MOCK_DATA.csv') as csvfile:
@@ -72,7 +116,7 @@ studentCombo['values'] = ('Get Info', 'Assign Student', 'Reassign Student', 'Del
 studentCombo.current(0)
 studentCombo.grid(column=1, row=2, sticky=W)
 
-ttk.Label(mainframe, text="Please Input Information: ").grid(column=1, row=1, sticky=W)
+ttk.Label(mainframe, text="Please Input Student Name/Number: ").grid(column=1, row=1, sticky=W)
 ttk.Label(mainframe, text="Find a Surname from a Forename.").grid(column=1, row=3, sticky=W)
 
 ttk.Label(mainframe, textvariable=answer2).grid(column=2, row=4)
