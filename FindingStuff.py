@@ -4,7 +4,10 @@ try:
 except:
     from tkinter import *
     from tkinter import ttk
-import tkMessageBox
+try:
+    import tkMessageBox
+except:
+    from tkinter import messagebox
 import csv
 import random
 
