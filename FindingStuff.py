@@ -91,8 +91,8 @@ def assignTutor(tutorList, studentName2):
             # TODO: I'm not sure what she wants to happen assuming there are no tutors left at all.
             # Maybe it just straight up fails and the student is fucked? Who knows.
             # TODO: Maybe replace this?
-            if len(newTempDict) = 0:
-                messagebox.showinfo("Tutor Assignment", "All Tutor Quotas Are Full")
+        if len(newTempDict) == 0:
+            messagebox.showinfo("Tutor Assignment", "All Tutor Quotas Are Full.")
 
 
 
@@ -172,7 +172,9 @@ def returnTutor(*args):
                 nameSplit = row[4].split(" ")
 
                 # Check stuff
-                if (nameinput.lower() == str(nameSplit[0]).lower()) or (nameinput.lower() == str(nameSplit[1]).lower()) or (nameinput.lower() == row[4]):
+                if nameinput == "":
+                    answer2.set("--> " + "Tutor not found/has no students.")
+                elif (nameinput.lower() == str(nameSplit[0]).lower()) or (nameinput.lower() == str(nameSplit[1]).lower()) or (nameinput.lower() == row[4]):
                     # Append to empty list a string of the students name nicely formatted
                     tempStudents.append(row[0] + " " + row[1])
                 else:
