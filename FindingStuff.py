@@ -90,6 +90,9 @@ def assignTutor(tutorList, studentName2):
 
             # TODO: I'm not sure what she wants to happen assuming there are no tutors left at all.
             # Maybe it just straight up fails and the student is fucked? Who knows.
+            # TODO: Maybe replace this?
+            if len(newTempDict) = 0:
+                messagebox.showinfo("Tutor Assignment", "All Tutor Quotas Are Full")
 
 
 
