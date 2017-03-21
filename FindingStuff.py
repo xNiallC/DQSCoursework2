@@ -76,7 +76,7 @@ def assignTutor(tutorList, studentName2):
             # If this number is equal to or exceeds their quota, we delete them from the list.
             # Else the while loop goes again until their are no tutors left.
             if numberOfStudentsWithTutor >= int(randomTutor[1]):
-                messagebox.showinfo("Tutor Assignment", "Tutor's quota is full, press OK to search again.")
+                messagebox.showinfo("Tutor Assignment", "Tutor " + randomTutor[0] + "'s quota is full, press OK to search again.")
                 del newTempDict[randomTutor[0]]
             else:
             # TODO: Nothing is actually written to the csv yet, I just completed the algorithm. Next step is to write the tutor name to the CSV.
@@ -91,8 +91,8 @@ def assignTutor(tutorList, studentName2):
             # TODO: I'm not sure what she wants to happen assuming there are no tutors left at all.
             # Maybe it just straight up fails and the student is fucked? Who knows.
             # TODO: Maybe replace this?
-        if len(newTempDict) == 0:
-            messagebox.showinfo("Tutor Assignment", "All Tutor Quotas Are Full.")
+            if len(newTempDict) == 0:
+                messagebox.showinfo("Tutor Assignment", "All Tutor Quotas Are Full.")
 
 
 
