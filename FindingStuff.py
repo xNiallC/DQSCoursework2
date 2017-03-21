@@ -92,9 +92,7 @@ def assignTutor(tutorList, studentName2, tempStudent):
                     messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
                     break
 
-            # TODO: I'm not sure what she wants to happen assuming there are no tutors left at all.
-            # Maybe it just straight up fails and the student is fucked? Who knows.
-            # TODO: Maybe replace this?
+            # We check if recursion has occured to properly inform user of what is happening.
             if len(newTempDict) == 0:
                 if runTwice:
                     messagebox.showinfo("Tutor Assignment", "All Tutor quotas are full.")
@@ -102,13 +100,18 @@ def assignTutor(tutorList, studentName2, tempStudent):
                     messagebox.showinfo("Tutor Assignment", "All Tutor quotas for same subject are full.")
                 runAgain = True
                 break
+
+        # This was hard. Recursion is hard. We only want to recurse the function once, thus why the global variables are needed to check this.
         if (runAgain) and (runTwice == False):
             with open('MOCK_TUTORS.csv') as tutor_csv:
+                # We know that know subject tutors are available if we are using recursion, so we create a dict like before,
+                # except we specify only tutors that DO NOT share a subject with the student.
                 tempList = {}
                 tutor_reader = csv.reader(tutor_csv)
                 for row in tutor_reader:
                     if row[3] != tempStudent:
                         tempList[row[0] + " " + row[1]] = row[4]
+                # After recursion, we change the global variables so it isn't an infinite loop.
                 runTwice = True
                 tempStudent = tempStudent
                 assignTutor(tempList, studentName, tempStudent)
