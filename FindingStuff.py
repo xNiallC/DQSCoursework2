@@ -50,9 +50,13 @@ import random
 ###        /o  o\ .'   `. /o  o\
 ###        `.___.'       `.___.'
 
+# Default variable for recursion
+runTwice = False
+runAgain = False
 
-
-def assignTutor(tutorList, studentName2):
+def assignTutor(tutorList, studentName2, tempStudent):
+    global runTwice
+    global runAgain
     with open('MOCK_DATA.csv') as csvfile:
         reader = csv.reader(csvfile)
 
@@ -92,8 +96,22 @@ def assignTutor(tutorList, studentName2):
             # Maybe it just straight up fails and the student is fucked? Who knows.
             # TODO: Maybe replace this?
             if len(newTempDict) == 0:
-                messagebox.showinfo("Tutor Assignment", "All Tutor Quotas Are Full.")
-
+                if runTwice:
+                    messagebox.showinfo("Tutor Assignment", "All Tutor quotas are full.")
+                elif not runTwice:
+                    messagebox.showinfo("Tutor Assignment", "All Tutor quotas for same subject are full.")
+                runAgain = True
+                break
+        if (runAgain) and (runTwice == False):
+            with open('MOCK_TUTORS.csv') as tutor_csv:
+                tempList = {}
+                tutor_reader = csv.reader(tutor_csv)
+                for row in tutor_reader:
+                    if row[3] != tempStudent:
+                        tempList[row[0] + " " + row[1]] = row[4]
+                runTwice = True
+                tempStudent = tempStudent
+                assignTutor(tempList, studentName, tempStudent)
 
 
 def returnStudent(*args):
@@ -123,6 +141,7 @@ def returnStudent(*args):
                         answer1.set("--> " + "Student not found.")
 
             if action == "Assign Student":
+                runTwice = False
                 # Initialise variables
                 tempList = {}
                 tempStudent = ""
@@ -148,9 +167,9 @@ def returnStudent(*args):
                     for row in tutorReader:
                         tempList[row[0] + " " + row[1]] = row[4]
                     # Run assigning function
-                    assignTutor(tempList, studentName2)
+                    assignTutor(tempList, studentName2, tempStudent)
                 else:
-                    assignTutor(tempList, studentName2)
+                    assignTutor(tempList, studentName2, tempStudent)
 
 def returnTutor(*args):
     with open('MOCK_DATA.csv') as csvfile:
