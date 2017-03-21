@@ -50,9 +50,6 @@ import random
 ###        /o  o\ .'   `. /o  o\
 ###        `.___.'       `.___.'
 
-# Default variable for recursion
-runTwice = False
-runAgain = False
 
 def assignTutor(tutorList, studentName2, tempStudent):
     global runTwice
@@ -68,6 +65,7 @@ def assignTutor(tutorList, studentName2, tempStudent):
 
             # Pick random tutor from list
             randomTutor = random.choice(list(tutorList.items()))
+            randomTutorString = ""
             # Initialise variable for tutor quote
             numberOfStudentsWithTutor = 0
 
@@ -86,36 +84,15 @@ def assignTutor(tutorList, studentName2, tempStudent):
             # TODO: Nothing is actually written to the csv yet, I just completed the algorithm. Next step is to write the tutor name to the CSV.
                 result = messagebox.askquestion("Tutor Assignment", "Assigning tutor " + randomTutor[0] + " to " + studentName + ". Is this okay?")
                 if result == 'yes':
-                    print("success")
-                    break
+                    # Create nicely formatted string to return
+                    randomTutorString = randomTutor[0] + " " + randomTutor[1]
+                    return randomTutorString
                 else:
+                    # Return an error, then continue loop
                     messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
-                    break
-
-            # We check if recursion has occured to properly inform user of what is happening.
-            if len(newTempDict) == 0:
-                if runTwice:
-                    messagebox.showinfo("Tutor Assignment", "All Tutor quotas are full.")
-                elif not runTwice:
-                    messagebox.showinfo("Tutor Assignment", "All Tutor quotas for same subject are full.")
-                runAgain = True
-                break
-
-        # This was hard. Recursion is hard. We only want to recurse the function once, thus why the global variables are needed to check this.
-        if (runAgain) and (runTwice == False):
-            with open('MOCK_TUTORS.csv') as tutor_csv:
-                # We know that know subject tutors are available if we are using recursion, so we create a dict like before,
-                # except we specify only tutors that DO NOT share a subject with the student.
-                tempList = {}
-                tutor_reader = csv.reader(tutor_csv)
-                for row in tutor_reader:
-                    if row[3] != tempStudent:
-                        tempList[row[0] + " " + row[1]] = row[4]
-                # After recursion, we change the global variables so it isn't an infinite loop.
-                runTwice = True
-                tempStudent = tempStudent
-                assignTutor(tempList, studentName, tempStudent)
-
+                    return False
+        # Total failure. Exit loop and rerun function later.
+        return False
 
 def returnStudent(*args):
     # Open CSV File
@@ -144,9 +121,9 @@ def returnStudent(*args):
                         answer1.set("--> " + "Student not found.")
 
             if action == "Assign Student":
-                runTwice = False
                 # Initialise variables
                 tempList = {}
+                tempList2 = {}
                 tempStudent = ""
                 studentName2 = ""
                 # Find a student from a number and assign its subject to the tempStudent variable
@@ -164,15 +141,23 @@ def returnStudent(*args):
                     if tempStudent == row[3]:
                         tempList[row[0] + " " + row[1]] = row[4]
 
-                # If there were no tutors matching the student's subject,  we add all the tutors to the list.
-                # Else, run the function with list of matched tutors.
-                if len(tempList) == 0:
-                    for row in tutorReader:
-                        tempList[row[0] + " " + row[1]] = row[4]
-                    # Run assigning function
-                    assignTutor(tempList, studentName2, tempStudent)
+                # Run function using list we made, then get the result. If tutor is found, we return the tutor name,
+                # else it fails and we re-run it with a list of tutors who's subject isn't the same as the student's.
+                result = assignTutor(tempList, studentName2, tempStudent)
+                if result:
+                    print("success") # Here we would call the write to csv function, like writeToCSV(result)
                 else:
-                    assignTutor(tempList, studentName2, tempStudent)
+                    # When CSV is read, the cursor is left at the end of the file. So we have to seek back to the start to search again.
+                    tutorscsv.seek(0)
+                    for row in tutorReader:
+                        if tempStudent != row[3]:
+                            tempList2[row[0] + " " + row[1]] = row[4]
+                    # Second running
+                    result2 = assignTutor(tempList2, studentName2, tempStudent)
+                    if result2:
+                        print("not fully, but still success") # Once again write the result
+                    else:
+                        print("Failed!") # Final fail state
 
 def returnTutor(*args):
     with open('MOCK_DATA.csv') as csvfile:
