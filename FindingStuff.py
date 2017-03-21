@@ -5,7 +5,7 @@ except:
     from tkinter import *
     from tkinter import ttk
 try:
-    import tkMessageBox
+    import messagebox
 except:
     from tkinter import messagebox
 import csv
@@ -76,16 +76,16 @@ def assignTutor(tutorList):
             # If this number is equal to or exceeds their quota, we delete them from the list.
             # Else the while loop goes again until their are no tutors left.
             if numberOfStudentsWithTutor >= int(randomTutor[1]):
-                tkMessageBox.showinfo("Tutor Assignment", "Tutor's quota is full, press OK to search again.")
+                messagebox.showinfo("Tutor Assignment", "Tutor's quota is full, press OK to search again.")
                 del newTempDict[randomTutor[0]]
             else:
             # TODO: Nothing is actually written to the csv yet, I just completed the algorithm. Next step is to write the tutor name to the CSV.
-                result = tkMessageBox.askquestion("Tutor Assignment", "Assigning tutor " + randomTutor[0] + " Is this okay?")
+                result = messagebox.askquestion("Tutor Assignment", "Assigning tutor " + randomTutor[0] + " Is this okay?")
                 if result == 'yes':
                     print("success")
                     break
                 else:
-                    tkMessageBox.showinfo("Tutor Assignment", "Tutor was not assigned.")
+                    messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
                     break
 
             # TODO: I'm not sure what she wants to happen assuming there are no tutors left at all.
@@ -180,7 +180,7 @@ def returnTutor(*args):
                 for i in tempStudents:
                     emptyString += i
                 # Message boxes for easy to read information
-                tkMessageBox.showinfo("Tutor Info", "Tutor has following Student: \n" + emptyString)
+                messagebox.showinfo("Tutor Info", "Tutor has following Student: \n" + emptyString)
             elif len(tempStudents) > 1:
                 # In order to correctly format commas, we take instances for number of iterations
                 instances = 0
@@ -191,7 +191,7 @@ def returnTutor(*args):
                     else:
                         emptyString += (i + ", \n")
                     instances += 1
-                tkMessageBox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
+                messagebox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
 
 root = Tk()
 root.title("Team 11")
