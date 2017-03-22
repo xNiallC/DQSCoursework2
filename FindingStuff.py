@@ -12,20 +12,73 @@ import csv
 import random
 import os
 
-def tutor_quota(tutorName):
-    with open('MOCK_TUTORS.csv') as csvfile:
+def number_of_students(tutor, student_csv, tutor_csv):
+    tutorInfo = search_csv(tutor, tutor_csv)
+    if tutorInfo:
+        tutorName = str(tutorInfo[0] + " " + tutorInfo[1]).lower()
+        count = 0
+        with open(student_csv) as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                if tutorName == str(row[4]).lower():
+                    count += 1
+        return count
+    else:
+        return False
+
+def list_students(tutor, student_csv, tutor_csv):
+    tutorInfo = search_csv(tutor, tutor_csv)
+    if tutorInfo:
+        tutorName = str(tutorInfo[0] + " " + tutorInfo[1]).lower()
+        studentList = []
+        with open(student_csv) as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                if tutorName == str(row[4]).lower():
+                    studentList.append(row[0] + " " + row[1])
+        return studentList
+    else:
+        return False
+
+
+def search_csv(inputToSearch, csvInput, returnAll = False):
+    with open(csvInput) as csvfile:
         reader = csv.reader(csvfile)
-        tutorNameSplit = ""
-        # Check whether we recieved a list or a string, if a list then we make a string
-        if " " not in tutorName:
-            tutorNameSplit = tutorName
+
+        if not returnAll:
+            for row in reader:
+                if inputToSearch == row[2]:
+                    return[row[0], row[1], row[2], row[3], row[4]]
+                elif inputToSearch == str(row[0]).lower():
+                    return[row[0], row[1], row[2], row[3], row[4]]
+                elif inputToSearch == str(row[1]).lower():
+                    return[row[0], row[1], row[2], row[3], row[4]]
+                elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
+                    return[row[0], row[1], row[2], row[3], row[4]]
+                elif inputToSearch == str(row[3]).lower():
+                    return[row[0], row[1], row[2], row[3], row[4]]
+                elif inputToSearch == str(row[4]).lower():
+                    return[row[0], row[1], row[2], row[3], row[4]]
         else:
-            tutorNameSplit = tutorName.lower().split(" ")
-        for row in reader:
-            # Find tutor in CSV and return quota
-            if (tutorNameSplit[0] == str(row[0]).lower()) and (tutorNameSplit[1] == str(row[1]).lower()):
-                (row[4])
-                return int(row[4])
+            all_results = []
+            for row in reader:
+                if inputToSearch == row[2]:
+                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                elif inputToSearch == str(row[0]).lower():
+                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                elif inputToSearch == str(row[1]).lower():
+                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
+                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                elif inputToSearch == str(row[3]).lower():
+                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                elif inputToSearch == str(row[4]).lower():
+                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+            return all_results
+
+        messagebox.showinfo("Search Info", "Search not found.")
+        return False
+
 
 def get_row_from_name(studentName):
     with open('MOCK_DATA.csv') as csvfile:
@@ -42,241 +95,124 @@ def get_row_from_name(studentName):
                 rowCount += 1
             break
 
+def assignTutor(tutors, studentInfo):
+    tutors = tutors
+    while len(tutors) != 0:
+        randomTutor = []
+        if len(tutors) > 1:
+            randomTutor = random.choice(tutors)
+        elif len(tutors) == 1:
+            randomTutor = tutors[0]
+        if type(randomTutor) != list:
+            return False
+        getNumberOfStudentsWithTutor = number_of_students(str(randomTutor[0]).lower(), 'MOCK_DATA.csv', 'MOCK_TUTORS.csv')
+        if int(getNumberOfStudentsWithTutor) >= int(randomTutor[4]):
+            messagebox.showinfo("Tutor Assignment", "Tutor " + str(randomTutor[0]) + " " + str(randomTutor[1]) + "'s quota is full, press OK to search again.")
+            tutors.remove(randomTutor)
+        else:
+            confirmAssign = messagebox.askquestion("Tutor Assignment", "Assigning tutor " + str(randomTutor[0]) + " " + str(randomTutor[1]) + " to " + studentInfo[0] + " " + studentInfo[1] + ". Is this okay?")
+            if confirmAssign == "yes":
+                randomTutorName = (randomTutor[0] + " " + randomTutor[1])
+                rowNumber = int(row_counter(studentInfo))
+                write_tutor(rowNumber, randomTutorName)
+                return True
+            else:
+                messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
+                return False
+    return False
 
-
-
-def assignTutor(tutorList, studentName2, tempStudent):
+def row_counter(studentInfo):
     with open('MOCK_DATA.csv') as csvfile:
         reader = csv.reader(csvfile)
+        count = 0
+        for row in reader:
+            if row[0] == studentInfo[0]:
+                return count
+            count += 1
 
-        newTempList = tutorList
-        studentName = studentName2
-        # This is where it got harder.
-        # The while loop checks that the list of available tutors is not 0, which we come to later.
-        while len(newTempList) != 0:
-
-            # Pick random tutor from list
-            randomTutor = random.choice(newTempList)
-            # Initialise variable for tutor quote
-            numberOfStudentsWithTutor = 0
-
-            # For each row in the student csv, if they currently have the randomly selected tutor, add 1 to the variable.
-            for row in reader:
-                if row[4] == randomTutor:
-                    numberOfStudentsWithTutor += 1
-
-            tutorQuota = tutor_quota(randomTutor)
-            # We now compare the variable with the tutor's quota number in the CSV.
-            # If this number is equal to or exceeds their quota, we delete them from the list.
-            # Else the while loop goes again until their are no tutors left.
-            if numberOfStudentsWithTutor >= tutorQuota:
-                messagebox.showinfo("Tutor Assignment", "Tutor " + randomTutor + "'s quota is full, press OK to search again.")
-                newTempList.remove(randomTutor)
-            else:
-                result = messagebox.askquestion("Tutor Assignment", "Assigning tutor " + randomTutor + " to " + studentName + ". Is this okay?")
-                if result == 'yes':
-                    # Create nicely formatted string to return
-                    return randomTutor
-                else:
-                    # Return an error, then continue loop
-                    messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
-                    return False
-        # Total failure. Exit loop and rerun function later.
-        messagebox.showinfo("Tutor Assignment", "No tutors available.")
-        return False
+def return_all_rows(csvInput):
+    with open(csvInput) as csvfile:
+        allresults = []
+        reader = csv.reader(csvfile)
+        for row in reader:
+            allresults.append([row[0], row[1], row[2], row[3], row[4]])
+        return allresults
 
 def returnStudent(*args):
-    # Open CSV File
-    with open('MOCK_DATA.csv', 'r+') as csvfile:
-        with open('MOCK_TUTORS.csv', 'r+') as tutorscsv:
-            # Variable names
-            tutorReader = csv.reader(tutorscsv)
-            reader = csv.reader(csvfile)
+    nameinput = str(studentName.get()).lower()
+    action = comboValue.get()
 
-            nameinput = str(studentName.get()).lower()
-            action = comboValue.get()
+    if nameinput == "":
+        return
 
-            if nameinput == "":
-                return
+    if action == "Assign Student":
+        getStudent = search_csv(nameinput, 'MOCK_DATA.csv')
 
-            if action == "Get Info":
-                foundStudent = False
-                # Searching for information
-                for row in reader:
-                    # Returns full info if you know a first/second name
-                    if (nameinput == row[0].lower()) or (nameinput == row[1].lower()):
-                        messagebox.showinfo("Student Info", "Student Name and Number: \n" + row[0] + " " + row[1] + " " + row[2] + "\nTutor: \n" + row[4])
-                        foundStudent = True
-                        break
-                    # Returns a name if you know a number
-                    elif nameinput == row[2]:
-                        messagebox.showinfo("Student Info", "Student Name: \n" + row[0] + " " + row[1] + "\nTutor: \n" + row[4])
-                        foundStudent = True
-                        break
-                    # Returns a nope if you know nothing
-                if not foundStudent:
-                    messagebox.showinfo("Student Info", "Student Not Found")
-
-            if action == "Assign Student":
-                # Initialise variables
-                tempList = []
-                tempList2 = []
-                tempStudent = ""
-                studentName2 = ""
-                foundStudent = False
-                foundStudentButHasTutor = False
-                studentCountForTutor = 0
-                # Find a student from a number and assign its subject to the tempStudent variable
-                for row in reader:
-                    if (nameinput == row[2]) and (str(row[4]) != 'none'):
-                        # We check if they have a tutor, if so just end the function
-                        messagebox.showinfo("Student Info", "Student already has a tutor.")
-                        foundStudentButHasTutor = True
-                        foundStudent = True
-                        return
-                    elif (nameinput == row[2]):
-                        tempStudent = row[3]
-                        studentName2 = row[0] + " " + row[1]
-                        foundStudent = True
-                if not foundStudentButHasTutor and not foundStudent:
-                    messagebox.showinfo("Student Info", "Student Not Found")
-                # Here it gets more complex. We earlier created a temporary dict.
-                # Now we iterate through the csv of tutor, and if the tutor's subject matches the student's
-                # we add the tutor's full name and quota number to the dict.
-                if foundStudent:
-                    for row in tutorReader:
-                        if tempStudent == row[3]:
-                            tempList.append(row[0] + " " + row[1])
-
-                            # Run function using list we made, then get the result. If tutor is found, we return the tutor name,
-                            # else it fails and we re-run it with a list of tutors who's subject isn't the same as the student's.
-                    result = assignTutor(tempList, studentName2, tempStudent)
-                    rowToEdit = get_row_from_name(studentName2)
-                    if result:
-                        write_tutor(rowToEdit, result)
-                    else:
-                        # When CSV is read, the cursor is left at the end of the file. So we have to seek back to the start to search again.
-                        tutorscsv.seek(0)
-                        for row in tutorReader:
-                            if tempStudent != row[3]:
-                                tempList2.append(row[0] + " " + row[1])
-                        # Second running
-                        result2 = assignTutor(tempList2, studentName2, tempStudent)
-                        if result2:
-                            write_tutor(rowToEdit, result2)
-
-            if action == "Delete Student":
-                foundStudent = False
-                for row in reader:
-                    if (nameinput == row[0].lower()) or (nameinput == row[1].lower()) or (nameinput == (row[0].lower() + " " + row[1].lower()) or (nameinput == row[2])):
-                        row_to_find = get_row_from_name((row[0] + " " + row[1]))
-                        result = messagebox.askquestion("Delete Student", "Deleting student " + (row[0] + " " + row[1]) + ". Is this okay?")
-                        if result == "yes":
-                            messagebox.showinfo("Delete Student", "Student was deleted.")
-                            delete_student(row_to_find)
-                        else:
-                            messagebox.showinfo("Tutor Assignment", "Student was not deleted.")
-                        foundStudent = True
-                if not foundStudent:
-                    messagebox.showinfo("Student Info", "Student Not Found")
-
-def returnTutorInfo(tutorInput):
-    with open('MOCK_DATA.csv') as csvfile:
-
-        reader = csv.reader(csvfile)
-
-        nameinput = tutorInput
-        nameSplit = ""
-        tempStudents = []
-        foundTutor = False
-        nameSplitFinal = ""
-
-        for row in reader:
-            # As the tutor name is all one word, first and last, we split into 2 for sake of easy searching
-            if " " not in str(row[4]):
-                nameSplit = row[4]
-            else:
-                nameSplit = row[4].split(" ")
-            # Check stuff
-            if (nameinput.lower() == str(nameSplit[0]).lower()) or (nameinput.lower() == str(nameSplit[1]).lower()) or (nameinput == str(row[4]).lower()):
-                # Append to empty list a string of the students name nicely formatted
-                nameSplitFinal = nameSplit
-                tempStudents.append(row[0] + " " + row[1])
-                foundTutor = True
-
-        if foundTutor:
-            # To make our software scalable, it returns the students and the name of the teacher. Useful!
-            return {'listStudents':tempStudents, 'nameOfTutorAsList':nameSplitFinal}
-        if not foundTutor:
-            # If the tutor doesn't have any students, they won't be in the student csv, so we need to search the
-            # tutor csv. We also then need to return a different value for their students to indicate they have none.
-            # So, I use 'failed'
-            with open('MOCK_TUTORS.csv') as tutorscsv:
-                tutorReader = csv.reader(tutorscsv)
-                for row in tutorReader:
-                    if (tutorInput == str(row[0]).lower()) or (tutorInput == str(row[1]).lower()) or (tutorInput == str(row[0] + row[1]).lower() or (tutorInput == row[2])):
-                        nameinput = str(row[0] + " " + row[1])
-            tempStudents = ['failed']
-            return {'listStudents':tempStudents, 'nameOfTutorAsList':nameinput}
-
-def returnTutor(*args):
-    with open('MOCK_DATA.csv') as csvfile:
-        reader = csv.reader(csvfile)
-
-        nameinput = str(tutorName.get())
-
-        action = comboValueTutor.get()
-        if nameinput == "":
+        if getStudent[4] != 'none':
+            messagebox.showinfo("Student Info", "Student already has a tutor.")
             return
 
-        # Getting info for tutor's srudents
-        if action == "Get Info":
-            # Initialise variables
-            getNeededInfo = returnTutorInfo(nameinput)
-            studentList = getNeededInfo['listStudents']
+        getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+
+        if len(getTutorWithSameSubject) == 0:
+            getTutorWithSameSubject = return_all_rows('MOCK_TUTORS')
+
+        result = assignTutor(getTutorWithSameSubject, getStudent)
+
+        if result == False:
+            getEverything = return_all_rows('MOCK_TUTORS.csv')
+            print(getEverything)
+            for i in getEverything:
+                for z in getTutorWithSameSubject:
+                    if i == z:
+                        print(z)
+                        getEverything.remove(z)
+            assignTutor(getEverything, getStudent)
+            return
+
+
+
+
+        if action == "Delete Student":
+            foundStudent = False
+            for row in reader:
+                if (nameinput == row[0].lower()) or (nameinput == row[1].lower()) or (nameinput == (row[0].lower() + " " + row[1].lower()) or (nameinput == row[2])):
+                    row_to_find = get_row_from_name((row[0] + " " + row[1]))
+                    result = messagebox.askquestion("Delete Student", "Deleting student " + (row[0] + " " + row[1]) + ". Is this okay?")
+                    if result == "yes":
+                        messagebox.showinfo("Delete Student", "Student was deleted.")
+                        delete_student(row_to_find)
+                    else:
+                        messagebox.showinfo("Tutor Assignment", "Student was not deleted.")
+                    foundStudent = True
+            if not foundStudent:
+                messagebox.showinfo("Student Info", "Student Not Found")
+
+def returnTutor(*args):
+    nameinput = str(tutorName.get()).lower()
+    action = comboValueTutor.get()
+
+    if nameinput == "":
+        return
+
+    if action == "Get Info":
+        result1 = search_csv(nameinput, 'MOCK_TUTORS.csv')
+        result2 = list_students(nameinput, 'MOCK_DATA.csv', 'MOCK_TUTORS.csv')
+        if result1 and result2:
+            instances = 0
             emptyString = ""
-
-            if str(studentList[0]) != 'failed':
-
-                # We like nice formatting, so if there's only 1 student, correct grammar is used.
-                if len(studentList) == 1:
-                    # For each student in list, add to a string for ing
-                    for i in studentList:
-                        emptyString += i
-                        # Message boxes for easy to read information
-                    messagebox.showinfo("Tutor Info", "Tutor has following Student: \n" + emptyString)
-                elif len(studentList) > 1:
-                    # In order to correctly format commas, we take instances for number of iterations
-                    instances = 0
-                    for i in studentList:
-                        # Checks if it's the last name, and if so don't put a comma
-                        if instances == (len(studentList) - 1):
-                            emptyString += (i + "\n")
-                        else:
-                            emptyString += (i + ", \n")
-                        instances += 1
-                    messagebox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
-
-            else:
-                messagebox.showinfo("Tutor Info", "Tutor not found/has no students")
-
-        if action == "View Quota":
-            # Pretty straight forward feature. Just runs a bunch of functions.
-            # We also again check whether we recieve a string or a list
-            getNeededInfo = returnTutorInfo(nameinput)
-            formattedTutorName = ""
-            if getNeededInfo:
-                tutorNameToUse = getNeededInfo['nameOfTutorAsList']
-                if type(tutorNameToUse) != str:
-                    formattedTutorName = tutorNameToUse[0] + " " + tutorNameToUse[1]
+            for i in result2:
+                if instances == (len(result2) - 1):
+                    emptyString += (i + "\n")
                 else:
-                    formattedTutorName = tutorNameToUse
-                result = tutor_quota(formattedTutorName)
-                messagebox.showinfo("Tutor Info", "Tutor's Quota is: " + str(result))
+                    emptyString += (i + ", \n")
+                instances += 1
+            messagebox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
 
-
-# Similair functions. Both create a new CSV with the required info, then replace
-# the old ones.
+    if action == "View Quota":
+        result = search_csv(nameinput, 'MOCK_TUTORS.csv')
+        if result:
+            messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4])
 
 def write_tutor(student_row_number, tutor_name):
     r = csv.reader(open('MOCK_DATA.csv')) # open csv file
