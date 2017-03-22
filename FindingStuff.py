@@ -12,9 +12,12 @@ import csv
 import random
 import os
 
+def get_row_from_name(studentName):
+    with open('MOCK_DATA.csv')
+    splitName = studentName.split(" ")
+
+
 def assignTutor(tutorList, studentName2, tempStudent):
-    global runTwice
-    global runAgain
     with open('MOCK_DATA.csv') as csvfile:
         reader = csv.reader(csvfile)
 
@@ -171,7 +174,7 @@ def write_tutor(student_row_number, tutor_name):
     r = csv.reader(open('MOCK_DATA.csv')) # open csv file
     lines = [l for l in r]
     lines[student_row_number][4] = tutor_name
-     
+
     writer = csv.writer(open('MOCK_DATA_2.csv', 'w'))
     writer.writerows(lines)
 
