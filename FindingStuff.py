@@ -96,6 +96,9 @@ def returnStudent(*args):
             nameinput = str(studentName.get()).lower()
             action = comboValue.get()
 
+            if nameinput == "":
+                return
+
             if action == "Get Info":
                 foundStudent = False
                 # Searching for information
@@ -223,6 +226,8 @@ def returnTutor(*args):
         nameinput = str(tutorName.get())
 
         action = comboValueTutor.get()
+        if nameinput == "":
+            return
 
         # Getting info for tutor's srudents
         if action == "Get Info":
