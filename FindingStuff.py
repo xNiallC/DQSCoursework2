@@ -170,6 +170,7 @@ def returnTutor(*args):
                     instances += 1
                 messagebox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
 
+
 def write_tutor(student_row_number, tutor_name):
     r = csv.reader(open('MOCK_DATA.csv')) # open csv file
     lines = [l for l in r]
@@ -181,6 +182,18 @@ def write_tutor(student_row_number, tutor_name):
     os.remove('MOCK_DATA.csv')
     os.rename('MOCK_DATA_2.csv', 'MOCK_DATA.csv')
 
+
+def delete_student(row_to_delete):
+    r = csv.reader(open('MOCK_DATA.csv'))  # open csv file
+    lines = [l for l in r]
+    del lines[row_to_delete]
+
+    writer = csv.writer(open('MOCK_DATA_2.csv', 'w'))
+    writer.writerows(lines)
+
+    os.remove('MOCK_DATA.csv')
+    os.rename('MOCK_DATA_NEW.csv', 'MOCK_DATA.csv')
+    return None
 
 
 root = Tk()
