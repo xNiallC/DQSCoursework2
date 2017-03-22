@@ -68,20 +68,18 @@ def returnStudent(*args):
 
             if action == "Get Info":
                 # Searching for information
-                counter = 0
                 for row in reader:
                     # Returns full info if you know a first/second name
                     if (nameinput == row[0].lower()) or (nameinput == row[1].lower()):
                         answer1.set("--> " + row[0] + " " + row[1] + " " + row[2])
-                        return counter  # Returns the row containing the student info to use in deleteStudent
+                        break
                     # Returns a name if you know a number
                     elif nameinput == row[2]:
                         answer1.set("--> " + row[0] + " " + row[1])
-                        return counter  # Returns the row containing the student info to use in deleteStudent
+                        break
                     # Returns a nope if you know nothing
                     else:
                         answer1.set("--> " + "Student not found.")
-                    counter += 1
 
             if action == "Assign Student":
                 # Initialise variables
@@ -169,19 +167,18 @@ def returnTutor(*args):
                     instances += 1
                 messagebox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
 
-
-def deleteStudent(row_to_delete):
-    # Open csv and delete the desired row
-    r = csv.reader(open('MOCK_DATA.csv'))
+def write_tutor(student_row_number, tutor_name):
+    r = csv.reader(open('MOCK_DATA.csv')) # open csv file
     lines = [l for l in r]
-    del lines[row_to_delete]
-    # Write changed data to new file
+    lines[student_row_number][4] = tutor_name
+     
     writer = csv.writer(open('MOCK_DATA_2.csv', 'w'))
     writer.writerows(lines)
-    # Delete old csv and change new file to MOCK_DATA.csv to replace in the system
+
     os.remove('MOCK_DATA.csv')
-    os.rename('MOCK_DATA_NEW.csv', 'MOCK_DATA.csv')
-    return None
+    os.rename('MOCK_DATA_2.csv', 'MOCK_DATA.csv')
+
+
 
 root = Tk()
 root.title("Team 11")
