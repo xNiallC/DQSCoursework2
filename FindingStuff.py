@@ -10,6 +10,7 @@ except:
     from tkinter import messagebox
 import csv
 import random
+import os
 
 def assignTutor(tutorList, studentName2, tempStudent):
     global runTwice
@@ -67,18 +68,20 @@ def returnStudent(*args):
 
             if action == "Get Info":
                 # Searching for information
+                counter = 0
                 for row in reader:
                     # Returns full info if you know a first/second name
                     if (nameinput == row[0].lower()) or (nameinput == row[1].lower()):
                         answer1.set("--> " + row[0] + " " + row[1] + " " + row[2])
-                        break
+                        return counter  # Returns the row containing the student info to use in deleteStudent
                     # Returns a name if you know a number
                     elif nameinput == row[2]:
                         answer1.set("--> " + row[0] + " " + row[1])
-                        break
+                        return counter  # Returns the row containing the student info to use in deleteStudent
                     # Returns a nope if you know nothing
                     else:
                         answer1.set("--> " + "Student not found.")
+                    counter += 1
 
             if action == "Assign Student":
                 # Initialise variables
@@ -165,6 +168,19 @@ def returnTutor(*args):
                         emptyString += (i + ", \n")
                     instances += 1
                 messagebox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
+
+
+def deleteStudent(row_to_delete):
+    r = csv.reader(open('MOCK_DATA.csv'))  # open csv file
+    lines = [l for l in r]
+    del lines[row_to_delete]
+
+    writer = csv.writer(open('MOCK_DATA_2.csv', 'w'))
+    writer.writerows(lines)
+
+    os.remove('MOCK_DATA.csv')
+    os.rename('MOCK_DATA_NEW.csv', 'MOCK_DATA.csv')
+    return None
 
 root = Tk()
 root.title("Team 11")
