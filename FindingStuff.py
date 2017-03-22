@@ -171,13 +171,14 @@ def returnTutor(*args):
 
 
 def deleteStudent(row_to_delete):
-    r = csv.reader(open('MOCK_DATA.csv'))  # open csv file
+    # Open csv and delete the desired row
+    r = csv.reader(open('MOCK_DATA.csv'))
     lines = [l for l in r]
     del lines[row_to_delete]
-
+    # Write changed data to new file
     writer = csv.writer(open('MOCK_DATA_2.csv', 'w'))
     writer.writerows(lines)
-
+    # Delete old csv and change new file to MOCK_DATA.csv to replace in the system
     os.remove('MOCK_DATA.csv')
     os.rename('MOCK_DATA_NEW.csv', 'MOCK_DATA.csv')
     return None
