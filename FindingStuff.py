@@ -133,9 +133,7 @@ def assignTutor(tutors, studentInfo):
             tutors.remove(randomTutor)
         else:
             randomTutorName = (randomTutor[0] + " " + randomTutor[1])
-            print(studentInfo)
             rowNumber = int(row_counter(studentInfo))
-            print(rowNumber)
             write_tutor(rowNumber, randomTutorName)
             return True
     return False
@@ -166,8 +164,6 @@ def row_counter(studentInfo):
         csvfile.seek(0)
         count = 0
         for row in reader:
-            print(row[0])
-            print(studentInfo[0])
             if row[2] == studentInfo[2]:
                 return count
             count += 1
