@@ -29,6 +29,8 @@ def number_of_students(tutor, student_csv, tutor_csv):
     else:
         return False
 
+
+
 def list_students(tutor, student_csv, tutor_csv):
     tutorInfo = search_csv(tutor, tutor_csv)
     if tutorInfo:
@@ -110,18 +112,12 @@ def assignTutor(tutors, studentInfo):
             return False
         getNumberOfStudentsWithTutor = number_of_students(str(randomTutor[0]).lower(), studentCSV, tutorCSV)
         if int(getNumberOfStudentsWithTutor) >= int(randomTutor[4]):
-            messagebox.showinfo("Tutor Assignment", "Tutor " + str(randomTutor[0]) + " " + str(randomTutor[1]) + "'s quota is full, press OK to search again.")
             tutors.remove(randomTutor)
         else:
-            confirmAssign = messagebox.askquestion("Tutor Assignment", "Assigning tutor " + str(randomTutor[0]) + " " + str(randomTutor[1]) + " to " + studentInfo[0] + " " + studentInfo[1] + ". Is this okay?")
-            if confirmAssign == "yes":
-                randomTutorName = (randomTutor[0] + " " + randomTutor[1])
-                rowNumber = int(row_counter(studentInfo))
-                write_tutor(rowNumber, randomTutorName)
-                return True
-            else:
-                messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
-                return True
+            randomTutorName = (randomTutor[0] + " " + randomTutor[1])
+            rowNumber = int(row_counter(studentInfo))
+            write_tutor(rowNumber, randomTutorName)
+            return True
     return False
 def reassignStudent(tutors, studentInfo):
 
