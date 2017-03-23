@@ -278,6 +278,7 @@ def write_tutor(student_row_number, tutor_name):
     writer.writerows(lines)
 
 
+
 def delete_student(row_to_delete):
     r = csv.reader(open(studentCSV))  # open csv file
     lines = [l for l in r]
