@@ -121,6 +121,28 @@ def assignTutor(tutors, studentInfo):
                 messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
                 return False
     return False
+def reassignStudent(tutors, studentInfo):
+
+    print(studentInfo)
+    print(tutors)
+
+    currentTutor = str(studentInfo[4]).lower()
+    getTutor = search_csv(currentTutor, 'MOCK_TUTORS.csv')
+
+    print(getTutor)
+
+    for tutor in tutors:
+        if getTutor[2] == tutor[2]:
+            tutors.remove(tutor)
+    
+    result = assignTutor(tutors, studentInfo)
+
+    if result == False:
+        return False
+    return
+
+
+
 
 def row_counter(studentInfo):
     with open('MOCK_DATA.csv') as csvfile:
@@ -171,12 +193,38 @@ def returnStudent(*args):
         if result == False:
             getEverything = return_all_rows('MOCK_TUTORS.csv')
             print(getEverything)
+            print(getTutorWithSameSubject)
+            tutorList = (x for x in getEverything if not in getTutorWithSameSubject)
+            print(getEverything)
             for i in getEverything:
                 for z in getTutorWithSameSubject:
                     if i == z:
                         print(z)
                         getEverything.remove(z)
             assignTutor(getEverything, getStudent)
+            return
+
+    if action == "Reassign Student":
+        getStudent = search_csv(nameinput, 'MOCK_DATA.csv')
+
+        if getStudent[4] == 'none':
+            messagebox.showinfo("Student Info", "Student has not yet been assigned a tutor.")
+
+        getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+
+        if len(getTutorWithSameSubject) == 0:
+            getTutorWithSameSubject = return_all_rows('MOCK_TUTORS')
+        result = reassignStudent(getTutorWithSameSubject, getStudent)
+
+        if result == False:
+            getEverything = return_all_rows('MOCK_TUTORS.csv')
+            print(getEverything)
+            for i in getEverything:
+                for z in getTutorWithSameSubject:
+                    if i == z:
+                        print(z)
+                        getEverything.remove(z)
+            reassignStudent(getEverything, getStudent)
             return
 
 
