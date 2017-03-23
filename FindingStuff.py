@@ -274,11 +274,9 @@ def write_tutor(student_row_number, tutor_name):
     lines = [l for l in r]
     lines[student_row_number][4] = tutor_name
 
-    writer = csv.writer(open('tempData.csv', 'w'))
+    writer = csv.writer(open(studentCSV, 'w'))
     writer.writerows(lines)
 
-    os.remove(studentCSV)
-    os.rename('tempData.csv', get_file_name(studentCSV))
 
 
 def delete_student(row_to_delete):
@@ -286,11 +284,9 @@ def delete_student(row_to_delete):
     lines = [l for l in r]
     del lines[row_to_delete]
 
-    writer = csv.writer(open('tempData.csv', 'w'))
+    writer = csv.writer(open(studentCSV, 'w'))
     writer.writerows(lines)
 
-    os.remove(studentCSV)
-    os.rename('tempData.csv', get_file_name(studentCSV))
 
 studentCSV = ""  # CSV of students' directory
 tutorCSV = ""  # CSV of tutors' directory
