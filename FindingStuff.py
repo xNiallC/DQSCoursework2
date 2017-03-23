@@ -85,34 +85,35 @@ def search_csv(inputToSearch, csvInput, returnAll = False):
 
         if not returnAll:
             for row in reader:
-
-                if inputToSearch == row[2]:
-                    return row
-                elif inputToSearch == str(row[0]).lower():
-                    return row
-                elif inputToSearch == str(row[1]).lower():
-                    return row
-                elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
-                    return row
-                elif inputToSearch == str(row[3]).lower():
-                    return row
-                elif inputToSearch == str(row[4]).lower():
-                    return row
+            	if row != []:
+	                if inputToSearch == row[2]:
+	                    return row
+	                elif inputToSearch == str(row[0]).lower():
+	                    return row
+	                elif inputToSearch == str(row[1]).lower():
+	                    return row
+	                elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
+	                    return row
+	                elif inputToSearch == str(row[3]).lower():
+	                    return row
+	                elif inputToSearch == str(row[4]).lower():
+	                    return row
         else:
             all_results = []
             for row in reader:
-                if inputToSearch == row[2]:
-                    all_results.append(row)
-                elif inputToSearch == str(row[0]).lower():
-                    all_results.append(row)
-                elif inputToSearch == str(row[1]).lower():
-                    all_results.append(row)
-                elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
-                    all_results.append(row)
-                elif inputToSearch == str(row[3]).lower():
-                    all_results.append(row)
-                elif inputToSearch == str(row[4]).lower():
-                    all_results.append(row)
+            	if row != []:
+	                if inputToSearch == row[2]:
+	                    all_results.append(row)
+	                elif inputToSearch == str(row[0]).lower():
+	                    all_results.append(row)
+	                elif inputToSearch == str(row[1]).lower():
+	                    all_results.append(row)
+	                elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
+	                    all_results.append(row)
+	                elif inputToSearch == str(row[3]).lower():
+	                    all_results.append(row)
+	                elif inputToSearch == str(row[4]).lower():
+	                    all_results.append(row)
 
             return all_results
 
@@ -143,7 +144,7 @@ def get_row_from_name(studentName):
 # If all goes well, we assign the student, otherwise return false.
 # Can only be done with unassigned students.
 def assignTutor(tutors, studentInfo):
-    tutors = tutors
+    tutors = tutors2
     studentYear = studentInfo[5]
     while len(tutors) != 0:
         randomTutor = []
