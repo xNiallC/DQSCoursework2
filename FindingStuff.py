@@ -12,7 +12,9 @@ except:
 import csv
 import random
 import os
+from sys import platform
 from tkinter import filedialog
+
 def number_of_students(tutor, student_csv, tutor_csv):
     tutorInfo = search_csv(tutor, tutor_csv)
     if tutorInfo:
@@ -82,7 +84,7 @@ def search_csv(inputToSearch, csvInput, returnAll = False):
 
 
 def get_row_from_name(studentName):
-    with open('MOCK_DATA.csv') as csvfile:
+    with open(studentCSV) as csvfile:
         # Initiate row count
         rowCount = 0
         reader = csv.reader(csvfile)
@@ -106,7 +108,7 @@ def assignTutor(tutors, studentInfo):
             randomTutor = tutors[0]
         if type(randomTutor) != list:
             return False
-        getNumberOfStudentsWithTutor = number_of_students(str(randomTutor[0]).lower(), 'MOCK_DATA.csv', 'MOCK_TUTORS.csv')
+        getNumberOfStudentsWithTutor = number_of_students(str(randomTutor[0]).lower(), studentCSV, tutorCSV)
         if int(getNumberOfStudentsWithTutor) >= int(randomTutor[4]):
             messagebox.showinfo("Tutor Assignment", "Tutor " + str(randomTutor[0]) + " " + str(randomTutor[1]) + "'s quota is full, press OK to search again.")
             tutors.remove(randomTutor)
@@ -127,7 +129,7 @@ def reassignStudent(tutors, studentInfo):
     print(tutors)
 
     currentTutor = str(studentInfo[4]).lower()
-    getTutor = search_csv(currentTutor, 'MOCK_TUTORS.csv')
+    getTutor = search_csv(currentTutor, tutorCSV)
 
     print(getTutor)
 
@@ -145,7 +147,7 @@ def reassignStudent(tutors, studentInfo):
 
 
 def row_counter(studentInfo):
-    with open('MOCK_DATA.csv') as csvfile:
+    with open(studentCSV) as csvfile:
         reader = csv.reader(csvfile)
         count = 0
         for row in reader:
@@ -170,7 +172,7 @@ def returnStudent(*args):
 
     if action == "Get Info":
         stringOfStudents = ""
-        result = search_csv(nameinput, 'MOCK_DATA.csv', returnAll = True)
+        result = search_csv(nameinput, studentCSV, returnAll = True)
         if result:
             for i in result:
                 stringOfStudents += (i[0] + " " + i[1] + ", " + i[2] + "\n")
@@ -179,22 +181,22 @@ def returnStudent(*args):
         messagebox.showinfo("Student Info", "Search not found.")
 
     if action == "Assign Student":
-        getStudent = search_csv(nameinput, 'MOCK_DATA.csv')
+        getStudent = search_csv(nameinput, studentCSV)
 
         if getStudent:
             if getStudent[4] != 'none':
                 messagebox.showinfo("Student Info", "Student already has a tutor.")
                 return
 
-            getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+            getTutorWithSameSubject = search_csv(getStudent[3], tutorCSV, returnAll = True)
 
         if len(getTutorWithSameSubject) == 0:
             getTutorWithSameSubject = return_all_rows('MOCK_TUTORS')
         result = assignTutor(getTutorWithSameSubject, getStudent)
 
         if result == False:
-                getEverything = return_all_rows('MOCK_TUTORS.csv')
-                getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+                getEverything = return_all_rows(tutorCSV)
+                getTutorWithSameSubject = search_csv(getStudent[3], tutorCSV, returnAll = True)
                 listToSearch = []
                 for i in getEverything:
                     if i not in getTutorWithSameSubject:
@@ -204,21 +206,21 @@ def returnStudent(*args):
         return
 
     if action == "Reassign Student":
-        getStudent = search_csv(nameinput, 'MOCK_DATA.csv')
+        getStudent = search_csv(nameinput, studentCSV)
 
         if getStudent[4] == 'none':
             messagebox.showinfo("Student Info", "Student has not yet been assigned a tutor.")
             return
 
-        getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+        getTutorWithSameSubject = search_csv(getStudent[3], tutorCSV, returnAll = True)
 
         if len(getTutorWithSameSubject) == 0:
             getTutorWithSameSubject = return_all_rows('MOCK_TUTORS')
         result = reassignStudent(getTutorWithSameSubject, getStudent)
 
         if result == False:
-                getEverything = return_all_rows('MOCK_TUTORS.csv')
-                getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+                getEverything = return_all_rows(tutorCSV)
+                getTutorWithSameSubject = search_csv(getStudent[3], tutorCSV, returnAll = True)
                 listToSearch = []
                 for i in getEverything:
                     if i not in getTutorWithSameSubject:
@@ -228,7 +230,7 @@ def returnStudent(*args):
         return
 
     if action == "Delete Student":
-        result = search_csv(nameinput, 'MOCK_DATA.csv')
+        result = search_csv(nameinput, studentCSV)
         if result:
             name_to_delete = result[0] + " " + result[1]
             row_number = get_row_from_name(name_to_delete)
@@ -249,8 +251,8 @@ def returnTutor(*args):
         return
 
     if action == "Get Info":
-        result1 = search_csv(nameinput, 'MOCK_TUTORS.csv')
-        result2 = list_students(nameinput, 'MOCK_DATA.csv', 'MOCK_TUTORS.csv')
+        result1 = search_csv(nameinput, tutorCSV)
+        result2 = list_students(nameinput, studentCSV, tutorCSV)
         if result1 and result2:
             instances = 0
             emptyString = ""
@@ -263,47 +265,67 @@ def returnTutor(*args):
             messagebox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
 
     if action == "View Quota":
-        result = search_csv(nameinput, 'MOCK_TUTORS.csv')
+        result = search_csv(nameinput, tutorCSV)
         if result:
             messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4])
 
 def write_tutor(student_row_number, tutor_name):
-    r = csv.reader(open('MOCK_DATA.csv')) # open csv file
+    r = csv.reader(open(studentCSV)) # open csv file
     lines = [l for l in r]
     lines[student_row_number][4] = tutor_name
 
-    writer = csv.writer(open('MOCK_DATA_2.csv', 'w'))
+    writer = csv.writer(open('tempData.csv', 'w'))
     writer.writerows(lines)
 
-    os.remove('MOCK_DATA.csv')
-    os.rename('MOCK_DATA_2.csv', 'MOCK_DATA.csv')
+    os.remove(studentCSV)
+    os.rename('tempData.csv', get_file_name(studentCSV))
 
 
 def delete_student(row_to_delete):
-    r = csv.reader(open('MOCK_DATA.csv'))  # open csv file
+    r = csv.reader(open(studentCSV))  # open csv file
     lines = [l for l in r]
     del lines[row_to_delete]
 
-    writer = csv.writer(open('MOCK_DATA_2.csv', 'w'))
+    writer = csv.writer(open('tempData.csv', 'w'))
     writer.writerows(lines)
 
-    os.remove('MOCK_DATA.csv')
-    os.rename('MOCK_DATA_2.csv', 'MOCK_DATA.csv')
+    os.remove(studentCSV)
+    os.rename('tempData.csv', get_file_name(studentCSV))
+
+studentCSV = ""  # CSV of students' directory
+tutorCSV = ""  # CSV of tutors' directory
 
 
-# Browse files to select csv
-def browse_csv():
+def browse_student_csv():
     root.fileName = filedialog.askopenfilename(filetypes=(("Comma-seperated values", ".csv"), ("All files", "*")))
-    print(root.fileName)  # Bug-testing
-    return root.fileName
+    global studentCSV
+    studentCSV = root.fileName
+    print(studentCSV)
+
+
+def browse_tutor_csv():
+    root.fileName = filedialog.askopenfilename(filetypes=(("Comma-seperated values", ".csv"), ("All files", "*")))
+    global tutorCSV
+    tutorCSV = root.fileName
+    print(tutorCSV)
+
+
+def get_file_name(CSVtype):
+    if platform == "win32":
+        split_list = CSVtype.split("/")
+    elif platform == "darwin":
+        split_list = CSVtype.split("\\")
+    return split_list[-1]
 
 
 root = Tk()
 root.title("Team 11")
 
 # Adds browse button
-button = Button(root, text="Browse", command=browse_csv)
+button = Button(root, text="Upload student CSV", command=browse_student_csv)
 button.grid(column=0, row=4)
+tutorButton = Button(root, text="Upload tutor CSV", command=browse_tutor_csv)
+tutorButton.grid(column=1, row=4)
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
