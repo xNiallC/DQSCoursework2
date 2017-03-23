@@ -18,7 +18,7 @@ from tkinter import filedialog
 # Take a tutor name, and the CSV names
 # Using this info, we iterate through the student CSV looking for the tutor's name
 # If found, we add 1 to count, then return the count at the end.
-def number_of_students(tutor, student_csv, tutor_csv):
+def number_of_students(tutor, student_csv, tutor_csv, year):
     tutorInfo = search_csv(tutor, tutor_csv)
     if tutorInfo:
         tutorName = str(tutorInfo[0] + " " + tutorInfo[1]).lower()
@@ -26,7 +26,7 @@ def number_of_students(tutor, student_csv, tutor_csv):
         with open(student_csv) as csvfile:
             reader = csv.reader(csvfile)
             for row in reader:
-                if tutorName == str(row[4]).lower():
+                if tutorName == str(row[4]).lower() and year == row[5]:
                     count += 1
         return count
     else:
@@ -36,21 +36,28 @@ def number_of_students(tutor, student_csv, tutor_csv):
 # Returns a list of non-assigned students if quotas are full.
 def assignAll():
     with open(studentCSV) as csvfile:
-        reader = csv.reader(csvfile)
+        r = csv.reader(open(studentCSV))  # open csv file
+        lines = [l for l in r]
         tutors = return_all_rows(tutorCSV)
-        for row in reader:
-            if row[4] == 'none':
-                assignTutor(tutors, row)
+
+        dontPrint = ""
+        for i in lines:
+            if i[4] == 'none':
+                assignTutor(tutors, i)
+        
+        reader = csv.reader(open(studentCSV))  # open csv file
+        lines2 = [l for l in reader]
+
         stringToPrint = ""
-        csvfile.seek(0)
-        for row in reader:
-            if row[4] == 'none':
-                stringToPrint += (row[0] + " " + row[1] + "\n")
+
+        for i in lines2:
+            if i[4] == 'none':
+                stringToPrint += (i[0] + " " + i[1] + "\n")
+
         if stringToPrint != "":
             messagebox.showinfo('Assignment Info', 'Students Not Assigned Due to Full Quotas: ' + stringToPrint)
             return
-        messagebox.showinfo('Assign All', 'All students assigned a student')
-        csvfile.seek(0)
+        messagebox.showinfo('Assign All', 'All students assigned a tutor')
         return
 
 # Goes through the student CSV with a given tutor name
@@ -78,32 +85,32 @@ def search_csv(inputToSearch, csvInput, returnAll = False):
         if not returnAll:
             for row in reader:
                 if inputToSearch == row[2]:
-                    return[row[0], row[1], row[2], row[3], row[4]]
+                    return row
                 elif inputToSearch == str(row[0]).lower():
-                    return[row[0], row[1], row[2], row[3], row[4]]
+                    return row
                 elif inputToSearch == str(row[1]).lower():
-                    return[row[0], row[1], row[2], row[3], row[4]]
+                    return row
                 elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
-                    return[row[0], row[1], row[2], row[3], row[4]]
+                    return row
                 elif inputToSearch == str(row[3]).lower():
-                    return[row[0], row[1], row[2], row[3], row[4]]
+                    return row
                 elif inputToSearch == str(row[4]).lower():
-                    return[row[0], row[1], row[2], row[3], row[4]]
+                    return row
         else:
             all_results = []
             for row in reader:
                 if inputToSearch == row[2]:
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    all_results.append(row)
                 elif inputToSearch == str(row[0]).lower():
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    all_results.append(row)
                 elif inputToSearch == str(row[1]).lower():
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    all_results.append(row)
                 elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    all_results.append(row)
                 elif inputToSearch == str(row[3]).lower():
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    all_results.append(row)
                 elif inputToSearch == str(row[4]).lower():
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    all_results.append(row)
             return all_results
 
         messagebox.showinfo("Search Info", "Search not found.")
@@ -133,6 +140,7 @@ def get_row_from_name(studentName):
 # Can only be done with unassigned students.
 def assignTutor(tutors, studentInfo):
     tutors = tutors
+    studentYear = studentInfo[5]
     while len(tutors) != 0:
         randomTutor = []
         if len(tutors) > 1:
@@ -141,8 +149,16 @@ def assignTutor(tutors, studentInfo):
             randomTutor = tutors[0]
         if type(randomTutor) != list:
             return False
-        getNumberOfStudentsWithTutor = number_of_students(str(randomTutor[0]).lower(), studentCSV, tutorCSV)
-        if int(getNumberOfStudentsWithTutor) >= int(randomTutor[4]):
+        getNumberOfStudentsWithTutor = number_of_students(str(randomTutor[0]).lower(), studentCSV, tutorCSV, studentYear)
+        yearRow = -1
+        if studentYear == 1:
+            yearRow = 4
+        if studentYear == 2:
+            yearRow = 5
+        if studentYear == 3:
+            yearRow = 6
+
+        if int(getNumberOfStudentsWithTutor) >= int(randomTutor[yearRow]):
             tutors.remove(randomTutor)
         else:
             randomTutorName = (randomTutor[0] + " " + randomTutor[1])
@@ -189,7 +205,7 @@ def return_all_rows(csvInput):
         allresults = []
         reader = csv.reader(csvfile)
         for row in reader:
-            allresults.append([row[0], row[1], row[2], row[3], row[4]])
+            allresults.append(row)
         return allresults
 
 # Main student function to handle all options from the GUI.
@@ -318,9 +334,9 @@ def returnTutor(*args):
         result = search_csv(nameinput, tutorCSV)
         if result:
             if int(result[4]) <= 1:
-                messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4] + " student.")
+                messagebox.showinfo("Tutor Info", result[0] + " " + result[1] + " has a quota of 0")
             elif int(result[4]) > 1:
-                messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4] + " students.")
+                messagebox.showinfo("Tutor Info", "Quota for " + result[0] + " " + result[1] + ": \n 1st Year: " + result[4] + "\n 2nd Year: " + result[5] + "\n 3rd Year: " + result[6])
 
 #Function that takes a tutor name and writes it into a given row of the CSV file                
 def write_tutor(student_row_number, tutor_name):

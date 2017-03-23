@@ -1,5 +1,5 @@
-John,Doe,101,comsci,9
-Adam,Adamson,102,comsci,9
-Thomas,NotComSci,103,notcomsci,9
-Edward,Music,104,music,9
-Jennifer,English,105,english,9
+John,Doe,101,comsci,1,2,3
+Adam,Adamson,102,comsci,5,4,5
+Thomas,Nash,103,notcomsci,2,6,4
+Edward,Johnson,104,music,7,7,7
+Jennifer,Supla,105,english,8,3,6
