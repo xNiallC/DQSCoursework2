@@ -263,14 +263,16 @@ def returnStudent(*args):
                 messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
                 return False
         return
-
+#Handles the user input in the tutor name/number input box
 def returnTutor(*args):
+    #parses inout value
     nameinput = str(tutorName.get()).lower()
     action = comboValueTutor.get()
 
+    #returns if no command is given
     if nameinput == "":
         return
-
+    #if get info is selected in the combo box then the file is searched for a tutor and their name and students they have are displayed
     if action == "Get Info":
         result1 = search_csv(nameinput, tutorCSV)
         result2 = list_students(nameinput, studentCSV, tutorCSV)
@@ -290,7 +292,7 @@ def returnTutor(*args):
             return
         messagebox.showinfo("Tutor Info", "Search not found.")
 
-
+    #Function that finds a tutor in the file according to user input and prints their quota
     if action == "View Quota":
         result = search_csv(nameinput, tutorCSV)
         if result:
@@ -298,6 +300,8 @@ def returnTutor(*args):
                 messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4] + " student.")
             elif int(result[4]) > 1:
                 messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4] + " students.")
+
+#Function that takes a tutor name and writes it into a given row of the CSV file                
 def write_tutor(student_row_number, tutor_name):
     r = csv.reader(open(studentCSV))  # open csv file
     lines = [l for l in r]
@@ -307,7 +311,7 @@ def write_tutor(student_row_number, tutor_name):
     writer.writerows(lines)
 
 
-
+#Function that takes a row on the CSV file as an argument and deletes that row from the file
 def delete_student(row_to_delete):
     r = csv.reader(open(studentCSV))  # open csv file
     lines = [l for l in r]
@@ -320,24 +324,18 @@ def delete_student(row_to_delete):
 studentCSV = "MOCK_DATA.csv"  # CSV of students' directory
 tutorCSV = "MOCK_TUTORS.csv"  # CSV of tutors' directory
 
-
+#Gets the directory of the Student CSV file chosen in the file explorer window
 def browse_student_csv():
     root.fileName = filedialog.askopenfilename(filetypes=(("Comma-seperated values", ".csv"), ("All files", "*")))
     global studentCSV
     studentCSV = root.fileName
 
+#Gets the directory of the Tutor CSV file chosen in the file explorer window
 def browse_tutor_csv():
     root.fileName = filedialog.askopenfilename(filetypes=(("Comma-seperated values", ".csv"), ("All files", "*")))
     global tutorCSV
     tutorCSV = root.fileName
 
-
-def get_file_name(CSVtype):
-    if platform == "win32":
-        split_list = CSVtype.split("/")
-    elif platform == "darwin":
-        split_list = CSVtype.split("\\")
-    return split_list[-1]
 
 
 root = Tk()
