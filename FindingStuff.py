@@ -15,6 +15,9 @@ import os
 from sys import platform
 from tkinter import filedialog
 
+# Take a tutor name, and the CSV names
+# Using this info, we iterate through the student CSV looking for the tutor's name
+# If found, we add 1 to count, then return the count at the end.
 def number_of_students(tutor, student_csv, tutor_csv):
     tutorInfo = search_csv(tutor, tutor_csv)
     if tutorInfo:
@@ -29,6 +32,8 @@ def number_of_students(tutor, student_csv, tutor_csv):
     else:
         return False
 
+# Big money function, assign every student that doesn't have a tutor currently.
+# Returns a list of non-assigned students if quotas are full.
 def assignAll():
     with open(studentCSV) as csvfile:
         reader = csv.reader(csvfile)
@@ -48,7 +53,8 @@ def assignAll():
         csvfile.seek(0)
         return
 
-
+# Goes through the student CSV with a given tutor name
+# Return a nicely formatted list of all the student names that go with that particular tutor
 def list_students(tutor, student_csv, tutor_csv):
     tutorInfo = search_csv(tutor, tutor_csv)
     if tutorInfo:
@@ -63,7 +69,8 @@ def list_students(tutor, student_csv, tutor_csv):
     else:
         return False
 
-
+# High functionality search function. Take an input, a CSV, and optionally specify to return all rows that match search_csv
+# When a match is found, return a nicely formatted list with all information about that student or tutor
 def search_csv(inputToSearch, csvInput, returnAll = False):
     with open(csvInput) as csvfile:
         reader = csv.reader(csvfile)
@@ -102,7 +109,8 @@ def search_csv(inputToSearch, csvInput, returnAll = False):
         messagebox.showinfo("Search Info", "Search not found.")
         return False
 
-
+# Take input of a student name, iterate through rows of the student CSV looking for that student.
+# Every iteration adds 1 to a count. Return count when found the student.
 def get_row_from_name(studentName):
     with open(studentCSV) as csvfile:
         # Initiate row count
@@ -118,6 +126,11 @@ def get_row_from_name(studentName):
                 rowCount += 1
             break
 
+# The assignment function. Looks primarily for tutors that have the same subject as the student.
+# If there are no tutors that share a subject with the student, then search all tutors.
+# We also check the quota of the tutor to check they have room for the student.
+# If all goes well, we assign the student, otherwise return false.
+# Can only be done with unassigned students.
 def assignTutor(tutors, studentInfo):
     tutors = tutors
     while len(tutors) != 0:
@@ -126,7 +139,7 @@ def assignTutor(tutors, studentInfo):
             randomTutor = random.choice(tutors)
         elif len(tutors) == 1:
             randomTutor = tutors[0]
-        if type(randomTutor) != list:          
+        if type(randomTutor) != list:
             return False
         getNumberOfStudentsWithTutor = number_of_students(str(randomTutor[0]).lower(), studentCSV, tutorCSV)
         if int(getNumberOfStudentsWithTutor) >= int(randomTutor[4]):
@@ -138,6 +151,8 @@ def assignTutor(tutors, studentInfo):
             return True
     return False
 
+# Same as assign but we remove the student's current tutor from the search as
+# We only want tutors that aren't their current (thus, reassign).
 def reassignStudent(tutors, studentInfo):
 
 
@@ -155,9 +170,7 @@ def reassignStudent(tutors, studentInfo):
         return False
     return
 
-
-
-
+# Simple function to take information and return a row number
 def row_counter(studentInfo):
     with open(studentCSV) as csvfile:
         reader = csv.reader(csvfile)
@@ -168,6 +181,9 @@ def row_counter(studentInfo):
                 return count
             count += 1
 
+# Special function to return every value in a CSV,
+# formatted as a list of lists.
+# Each row is a list.
 def return_all_rows(csvInput):
     with open(csvInput) as csvfile:
         allresults = []
@@ -176,6 +192,11 @@ def return_all_rows(csvInput):
             allresults.append([row[0], row[1], row[2], row[3], row[4]])
         return allresults
 
+# Main student function to handle all options from the GUI.
+# Takes the action from the GUI, then runs functions relevant to that.
+# Get Info takes the text input from GUI, uses the search function then displays the student's relevant information.
+# Assign Student and Reassign student are fairly self explanatory, just run the functions using the user's student input.
+# Delete student searches for the row number based on input, then deletes that entire row.
 def returnStudent(*args):
     nameinput = str(studentName.get()).lower()
     action = comboValue.get()
