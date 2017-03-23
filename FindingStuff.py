@@ -175,7 +175,7 @@ def returnStudent(*args):
         result = search_csv(nameinput, studentCSV, returnAll = True)
         if result:
             for i in result:
-                stringOfStudents += ("Name: " + i[0] + " " + i[1] + " | " + "Student No: " + i[2] + "\n")
+                stringOfStudents += ("Name: " + i[0] + " " + i[1] + " | " + "Student No: " + i[2] + " | " + "Tutor: " + i[4] + "\n")
             messagebox.showinfo("Student Info", stringOfStudents)
             return
         messagebox.showinfo("Student Info", "Search not found.")
