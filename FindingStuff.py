@@ -29,6 +29,24 @@ def number_of_students(tutor, student_csv, tutor_csv):
     else:
         return False
 
+def assignAll():
+    with open(studentCSV) as csvfile:
+        reader = csv.reader(csvfile)
+        tutors = return_all_rows(tutorCSV)
+        for row in reader:
+            if row[4] == 'none':
+                assignTutor(tutors, row)
+        stringToPrint = ""
+        csvfile.seek(0)
+        for row in reader:
+            if row[4] == 'none':
+                stringToPrint += (row[0] + " " + row[1] + "\n")
+        if stringToPrint != "":
+            messagebox.showinfo('Assignment Info', 'Students Not Assigned Due to Full Quotas: ' + stringToPrint)
+            return
+        messagebox.showinfo('Assign All', 'All students assigned a student')
+        csvfile.seek(0)
+        return
 
 
 def list_students(tutor, student_csv, tutor_csv):
@@ -108,26 +126,26 @@ def assignTutor(tutors, studentInfo):
             randomTutor = random.choice(tutors)
         elif len(tutors) == 1:
             randomTutor = tutors[0]
-        if type(randomTutor) != list:
+        if type(randomTutor) != list:          
             return False
         getNumberOfStudentsWithTutor = number_of_students(str(randomTutor[0]).lower(), studentCSV, tutorCSV)
         if int(getNumberOfStudentsWithTutor) >= int(randomTutor[4]):
             tutors.remove(randomTutor)
         else:
             randomTutorName = (randomTutor[0] + " " + randomTutor[1])
+            print(studentInfo)
             rowNumber = int(row_counter(studentInfo))
+            print(rowNumber)
             write_tutor(rowNumber, randomTutorName)
             return True
     return False
+
 def reassignStudent(tutors, studentInfo):
 
-    print(studentInfo)
-    print(tutors)
 
     currentTutor = str(studentInfo[4]).lower()
     getTutor = search_csv(currentTutor, tutorCSV)
 
-    print(getTutor)
 
     for tutor in tutors:
         if getTutor[2] == tutor[2]:
@@ -145,9 +163,12 @@ def reassignStudent(tutors, studentInfo):
 def row_counter(studentInfo):
     with open(studentCSV) as csvfile:
         reader = csv.reader(csvfile)
+        csvfile.seek(0)
         count = 0
         for row in reader:
-            if row[0] == studentInfo[0]:
+            print(row[0])
+            print(studentInfo[0])
+            if row[2] == studentInfo[2]:
                 return count
             count += 1
 
@@ -174,7 +195,7 @@ def returnStudent(*args):
                 stringOfStudents += (i[0] + " " + i[1] + ", " + i[2] + "\n")
             messagebox.showinfo("Student Info", stringOfStudents)
             return
-        messagebox.showinfo("Student Info", "Search not found.")
+        messagebox.showinfo("Student Info", "Search had no results.")
 
     if action == "Assign Student":
         getStudent = search_csv(nameinput, studentCSV)
@@ -187,7 +208,7 @@ def returnStudent(*args):
             getTutorWithSameSubject = search_csv(getStudent[3], tutorCSV, returnAll = True)
 
         if len(getTutorWithSameSubject) == 0:
-            getTutorWithSameSubject = return_all_rows('MOCK_TUTORS')
+            getTutorWithSameSubject = return_all_rows(tutorCSV)
         result = assignTutor(getTutorWithSameSubject, getStudent)
 
         if result == False:
@@ -198,7 +219,11 @@ def returnStudent(*args):
                     if i not in getTutorWithSameSubject:
                         listToSearch.append(i)
                 assignTutor(listToSearch, getStudent)
-                return
+        studentFinal = search_csv(nameinput, studentCSV)
+        if studentFinal[4] == 'none':
+            messagebox.showinfo("Student info", studentFinal[0] + " " + studentFinal[1] + " has not been assigned. No tutors are available.")
+            return
+        messagebox.showinfo("Student info", studentFinal[0] + " " + studentFinal[1] + " has been assigned to " + studentFinal[4])
         return
 
     if action == "Reassign Student":
@@ -211,7 +236,7 @@ def returnStudent(*args):
         getTutorWithSameSubject = search_csv(getStudent[3], tutorCSV, returnAll = True)
 
         if len(getTutorWithSameSubject) == 0:
-            getTutorWithSameSubject = return_all_rows('MOCK_TUTORS')
+            getTutorWithSameSubject = return_all_rows(tutorCSV)
         result = reassignStudent(getTutorWithSameSubject, getStudent)
 
         if result == False:
@@ -222,7 +247,11 @@ def returnStudent(*args):
                     if i not in getTutorWithSameSubject:
                         listToSearch.append(i)
                 reassignStudent(listToSearch, getStudent)
-                return
+        studentFinal = search_csv(nameinput, studentCSV)
+        if studentFinal[4] == 'none':
+            messagebox.showinfo("Student info", studentFinal[0] + " " + studentFinal[1] + " has not been assigned. No tutors are available.")
+            return
+        messagebox.showinfo("Student info", studentFinal[0] + " " + studentFinal[1] + " has been assigned to " + studentFinal[4])
         return
 
     if action == "Delete Student":
@@ -298,14 +327,11 @@ def browse_student_csv():
     root.fileName = filedialog.askopenfilename(filetypes=(("Comma-seperated values", ".csv"), ("All files", "*")))
     global studentCSV
     studentCSV = root.fileName
-    print(studentCSV)
-
 
 def browse_tutor_csv():
     root.fileName = filedialog.askopenfilename(filetypes=(("Comma-seperated values", ".csv"), ("All files", "*")))
     global tutorCSV
     tutorCSV = root.fileName
-    print(tutorCSV)
 
 
 def get_file_name(CSVtype):
@@ -347,6 +373,7 @@ tutor_entry = ttk.Entry(mainframe, width=10, textvariable=tutorName)
 tutor_entry.grid(column=2, row=3, sticky=(W, E))
 
 ttk.Button(mainframe, text="Submit Student", command=returnStudent).grid(column=2, row=2, sticky=W)
+ttk.Button(mainframe, text="Assign All Students", command=assignAll).grid(column=4, row=1, sticky=W)
 #ttk.Label(mainframe, textvariable=answer1).grid(column=2, row=2)
 #ttk.Button(mainframe, text="Calculate Surname", command=returnStudent).grid(column=1, row=2, sticky=W)
 
