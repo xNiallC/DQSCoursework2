@@ -221,7 +221,6 @@ def returnStudent(*args):
                 stringOfStudents += ("Name: " + i[0] + " " + i[1] + " | " + "Student No: " + i[2] + " | " + "Tutor: " + i[4] + "\n")
             messagebox.showinfo("Student Info", stringOfStudents)
             return
-        messagebox.showinfo("Student Info", "Search had no results.")
 
     if action == "Assign Student":
         getStudent = search_csv(nameinput, studentCSV)
@@ -320,7 +319,6 @@ def returnTutor(*args):
         elif result1:
             messagebox.showinfo("Tutor Info", result1[0] + " " + result1[1] + " has no students")
             return
-        messagebox.showinfo("Tutor Info", "Search not found.")
 
     #Function that finds a tutor in the file according to user input and prints their quota
     if action == "View Quota":
