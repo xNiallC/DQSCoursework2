@@ -1,6 +1,7 @@
 try:
     from Tkinter import *
     import ttk
+    from tkinter import filedialog
 except:
     from tkinter import *
     from tkinter import ttk
@@ -11,7 +12,7 @@ except:
 import csv
 import random
 import os
-
+from tkinter import filedialog
 def number_of_students(tutor, student_csv, tutor_csv):
     tutorInfo = search_csv(tutor, tutor_csv)
     if tutorInfo:
@@ -238,8 +239,19 @@ def delete_student(row_to_delete):
     os.rename('MOCK_DATA_2.csv', 'MOCK_DATA.csv')
 
 
+# Browse files to select csv
+def browse_csv():
+    root.fileName = filedialog.askopenfilename(filetypes=(("Comma-seperated values", ".csv"), ("All files", "*")))
+    print(root.fileName)  # Bug-testing
+    return root.fileName
+
+
 root = Tk()
 root.title("Team 11")
+
+# Adds browse button
+button = Button(root, text="Browse", command=browse_csv)
+button.grid(column=0, row=4)
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -291,6 +303,3 @@ root.bind('<Return>', returnStudent, add="+")
 root.bind('<Return>', returnTutor, add="+")
 
 root.mainloop()
-
-
-# Push Test
