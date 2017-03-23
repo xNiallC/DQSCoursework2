@@ -192,7 +192,7 @@ def returnStudent(*args):
         result = search_csv(nameinput, studentCSV, returnAll = True)
         if result:
             for i in result:
-                stringOfStudents += (i[0] + " " + i[1] + ", " + i[2] + "\n")
+                stringOfStudents += ("Name: " + i[0] + " " + i[1] + " | " + "Student No: " + i[2] + " | " + "Tutor: " + i[4] + "\n")
             messagebox.showinfo("Student Info", stringOfStudents)
             return
         messagebox.showinfo("Student Info", "Search had no results.")
@@ -298,8 +298,10 @@ def returnTutor(*args):
     if action == "View Quota":
         result = search_csv(nameinput, tutorCSV)
         if result:
-            messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4])
-
+            if int(result[4]) <= 1:
+                messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4] + " student.")
+            elif int(result[4]) > 1:
+                messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4] + " students.")
 def write_tutor(student_row_number, tutor_name):
     r = csv.reader(open(studentCSV))  # open csv file
     lines = [l for l in r]
