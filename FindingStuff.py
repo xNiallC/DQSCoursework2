@@ -132,7 +132,7 @@ def reassignStudent(tutors, studentInfo):
     for tutor in tutors:
         if getTutor[2] == tutor[2]:
             tutors.remove(tutor)
-    
+
     result = assignTutor(tutors, studentInfo)
 
     if result == False:
@@ -258,7 +258,13 @@ def returnTutor(*args):
                 else:
                     emptyString += (i + ", \n")
                 instances += 1
-            messagebox.showinfo("Tutor Info", "Tutor has following Students: \n" + emptyString)
+            messagebox.showinfo("Tutor Info", result1[0] + " " + result1[1] + " has following Students: \n" + emptyString)
+            return
+        elif result1:
+            messagebox.showinfo("Tutor Info", result1[0] + " " + result1[1] + " has no students")
+            return
+        messagebox.showinfo("Tutor Info", "Search not found.")
+
 
     if action == "View Quota":
         result = search_csv(nameinput, tutorCSV)
@@ -284,8 +290,8 @@ def delete_student(row_to_delete):
     writer.writerows(lines)
 
 
-studentCSV = ""  # CSV of students' directory
-tutorCSV = ""  # CSV of tutors' directory
+studentCSV = "MOCK_DATA.csv"  # CSV of students' directory
+tutorCSV = "MOCK_TUTORS.csv"  # CSV of tutors' directory
 
 
 def browse_student_csv():
@@ -314,15 +320,17 @@ root = Tk()
 root.title("Team 11")
 
 # Adds browse button
-button = Button(root, text="Upload student CSV", command=browse_student_csv)
-button.grid(column=0, row=4)
-tutorButton = Button(root, text="Upload tutor CSV", command=browse_tutor_csv)
-tutorButton.grid(column=1, row=4)
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
+
+ttk.Separator(mainframe).grid(column=3)
+ttk.Label(mainframe, text="Choose CSVs to be used: ").grid(column=4, row=2)
+ttk.Button(mainframe, text="Upload student CSV", command=browse_student_csv).grid(column=4, row=3, sticky=W)
+ttk.Button(mainframe, text="Upload tutor CSV", command=browse_tutor_csv).grid(column=4, row=4, sticky=W)
+
 
 comboValue = StringVar()
 comboValueTutor = StringVar()
