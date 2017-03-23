@@ -146,6 +146,14 @@ def returnStudent(*args):
     if nameinput == "":
         return
 
+    if action == "Get Info":
+        stringOfStudents = ""
+        result = search_csv(nameinput, 'MOCK_DATA.csv', returnAll = True)
+        for i in result:
+            stringOfStudents += (i[0] + " " + i[1] + ", " + i[2] + "\n")
+        messagebox.showinfo("Student Info", stringOfStudents)
+        return
+
     if action == "Assign Student":
         getStudent = search_csv(nameinput, 'MOCK_DATA.csv')
 
