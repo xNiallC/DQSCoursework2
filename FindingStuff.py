@@ -119,7 +119,7 @@ def assignTutor(tutors, studentInfo):
                 return True
             else:
                 messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
-                return False
+                return True
     return False
 
 def row_counter(studentInfo):
@@ -167,17 +167,24 @@ def returnStudent(*args):
             getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
 
             if len(getTutorWithSameSubject) == 0:
-                getTutorWithSameSubject = return_all_rows('MOCK_TUTORS')
+                getTutorWithSameSubject = return_all_rows('MOCK_TUTORS.csv')
 
             result = assignTutor(getTutorWithSameSubject, getStudent)
 
+
             if result == False:
                 getEverything = return_all_rows('MOCK_TUTORS.csv')
+                getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+                everythingList = []
                 for i in getEverything:
-                    for z in getTutorWithSameSubject:
-                        if i == z:
-                            getEverything.remove(z)
-                assignTutor(getEverything, getStudent)
+                    everythingList.append(i)
+                for z in getTutorWithSameSubject:
+                    everythingList.append(z)
+                listToSearch = []
+                for i in everythingList:
+                    if i not in listToSearch:
+                        listToSearch.append(i)
+                assignTutor(listToSearch, getStudent)
                 return
         return
 
