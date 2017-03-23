@@ -270,7 +270,7 @@ def returnTutor(*args):
             messagebox.showinfo("Tutor Info", "Tutor has a quota of: " + result[4])
 
 def write_tutor(student_row_number, tutor_name):
-    r = csv.reader(open(studentCSV)) # open csv file
+    r = csv.reader(open(studentCSV))  # open csv file
     lines = [l for l in r]
     lines[student_row_number][4] = tutor_name
 
