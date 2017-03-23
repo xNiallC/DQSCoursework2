@@ -26,8 +26,9 @@ def number_of_students(tutor, student_csv, tutor_csv):
         with open(student_csv) as csvfile:
             reader = csv.reader(csvfile)
             for row in reader:
-                if tutorName == str(row[4]).lower():
-                    count += 1
+                if row != []:
+                    if tutorName == str(row[4]).lower():
+                        count += 1
         return count
     else:
         return False
@@ -39,13 +40,15 @@ def assignAll():
         reader = csv.reader(csvfile)
         tutors = return_all_rows(tutorCSV)
         for row in reader:
-            if row[4] == 'none':
-                assignTutor(tutors, row)
+            if row != []:
+                if row[4] == 'none':
+                    assignTutor(tutors, row)
         stringToPrint = ""
         csvfile.seek(0)
         for row in reader:
-            if row[4] == 'none':
-                stringToPrint += (row[0] + " " + row[1] + "\n")
+            if row != []:
+                if row[4] == 'none':
+                    stringToPrint += (row[0] + " " + row[1] + "\n")
         if stringToPrint != "":
             messagebox.showinfo('Assignment Info', 'Students Not Assigned Due to Full Quotas: ' + stringToPrint)
             return
@@ -63,8 +66,9 @@ def list_students(tutor, student_csv, tutor_csv):
         with open(student_csv) as csvfile:
             reader = csv.reader(csvfile)
             for row in reader:
-                if tutorName == str(row[4]).lower():
-                    studentList.append(row[0] + " " + row[1])
+                if row != []:
+                    if tutorName == str(row[4]).lower():
+                        studentList.append(row[0] + " " + row[1])
         return studentList
     else:
         return False
@@ -77,33 +81,35 @@ def search_csv(inputToSearch, csvInput, returnAll = False):
 
         if not returnAll:
             for row in reader:
-                if inputToSearch == row[2]:
-                    return[row[0], row[1], row[2], row[3], row[4]]
-                elif inputToSearch == str(row[0]).lower():
-                    return[row[0], row[1], row[2], row[3], row[4]]
-                elif inputToSearch == str(row[1]).lower():
-                    return[row[0], row[1], row[2], row[3], row[4]]
-                elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
-                    return[row[0], row[1], row[2], row[3], row[4]]
-                elif inputToSearch == str(row[3]).lower():
-                    return[row[0], row[1], row[2], row[3], row[4]]
-                elif inputToSearch == str(row[4]).lower():
-                    return[row[0], row[1], row[2], row[3], row[4]]
+                if row != []:
+                    if inputToSearch == row[2]:
+                        return[row[0], row[1], row[2], row[3], row[4]]
+                    elif inputToSearch == str(row[0]).lower():
+                        return[row[0], row[1], row[2], row[3], row[4]]
+                    elif inputToSearch == str(row[1]).lower():
+                        return[row[0], row[1], row[2], row[3], row[4]]
+                    elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
+                        return[row[0], row[1], row[2], row[3], row[4]]
+                    elif inputToSearch == str(row[3]).lower():
+                        return[row[0], row[1], row[2], row[3], row[4]]
+                    elif inputToSearch == str(row[4]).lower():
+                        return[row[0], row[1], row[2], row[3], row[4]]
         else:
             all_results = []
             for row in reader:
-                if inputToSearch == row[2]:
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
-                elif inputToSearch == str(row[0]).lower():
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
-                elif inputToSearch == str(row[1]).lower():
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
-                elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
-                elif inputToSearch == str(row[3]).lower():
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
-                elif inputToSearch == str(row[4]).lower():
-                    all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                if row != []:
+                    if inputToSearch == row[2]:
+                        all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    elif inputToSearch == str(row[0]).lower():
+                        all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    elif inputToSearch == str(row[1]).lower():
+                        all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    elif inputToSearch == (str(row[0]).lower() + " " + str(row[1]).lower()):
+                        all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    elif inputToSearch == str(row[3]).lower():
+                        all_results.append([row[0], row[1], row[2], row[3], row[4]])
+                    elif inputToSearch == str(row[4]).lower():
+                        all_results.append([row[0], row[1], row[2], row[3], row[4]])
             return all_results
 
         messagebox.showinfo("Search Info", "Search not found.")
@@ -121,9 +127,10 @@ def get_row_from_name(studentName):
         # Searches through til its found, adding to row count to be returned
         while True:
             for row in reader:
-                if (splitName[0] == row[0]) and (splitName[1] == row[1]):
-                    return rowCount
-                rowCount += 1
+                if row != []:
+                    if (splitName[0] == row[0]) and (splitName[1] == row[1]):
+                        return rowCount
+                    rowCount += 1
             break
 
 # The assignment function. Looks primarily for tutors that have the same subject as the student.
@@ -177,9 +184,10 @@ def row_counter(studentInfo):
         csvfile.seek(0)
         count = 0
         for row in reader:
-            if row[2] == studentInfo[2]:
-                return count
-            count += 1
+            if row != []:
+                if row[2] == studentInfo[2]:
+                    return count
+                count += 1
 
 # Special function to return every value in a CSV,
 # formatted as a list of lists.
@@ -189,7 +197,8 @@ def return_all_rows(csvInput):
         allresults = []
         reader = csv.reader(csvfile)
         for row in reader:
-            allresults.append([row[0], row[1], row[2], row[3], row[4]])
+            if row != []:
+                allresults.append([row[0], row[1], row[2], row[3], row[4]])
         return allresults
 
 # Main student function to handle all options from the GUI.
@@ -325,7 +334,7 @@ def returnTutor(*args):
 #Function that takes a tutor name and writes it into a given row of the CSV file                
 def write_tutor(student_row_number, tutor_name):
     r = csv.reader(open(studentCSV))  # open csv file
-    lines = [l for l in r]
+    lines = [l for l in r if l != []]
     lines[student_row_number][4] = tutor_name
 
     writer = csv.writer(open(studentCSV, 'w'))
@@ -335,7 +344,7 @@ def write_tutor(student_row_number, tutor_name):
 #Function that takes a row on the CSV file as an argument and deletes that row from the file
 def delete_student(row_to_delete):
     r = csv.reader(open(studentCSV))  # open csv file
-    lines = [l for l in r]
+    lines = [l for l in r if l != []]
     del lines[row_to_delete]
 
     writer = csv.writer(open(studentCSV, 'w'))
