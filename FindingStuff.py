@@ -119,7 +119,7 @@ def assignTutor(tutors, studentInfo):
                 return True
             else:
                 messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
-                return False
+                return True
     return False
 def reassignStudent(tutors, studentInfo):
 
@@ -171,44 +171,44 @@ def returnStudent(*args):
     if action == "Get Info":
         stringOfStudents = ""
         result = search_csv(nameinput, 'MOCK_DATA.csv', returnAll = True)
-        for i in result:
-            stringOfStudents += (i[0] + " " + i[1] + ", " + i[2] + "\n")
-        messagebox.showinfo("Student Info", stringOfStudents)
-        return
+        if result:
+            for i in result:
+                stringOfStudents += (i[0] + " " + i[1] + ", " + i[2] + "\n")
+            messagebox.showinfo("Student Info", stringOfStudents)
+            return
+        messagebox.showinfo("Student Info", "Search not found.")
 
     if action == "Assign Student":
         getStudent = search_csv(nameinput, 'MOCK_DATA.csv')
 
-        if getStudent[4] != 'none':
-            messagebox.showinfo("Student Info", "Student already has a tutor.")
-            return
+        if getStudent:
+            if getStudent[4] != 'none':
+                messagebox.showinfo("Student Info", "Student already has a tutor.")
+                return
 
-        getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+            getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
 
         if len(getTutorWithSameSubject) == 0:
             getTutorWithSameSubject = return_all_rows('MOCK_TUTORS')
-
         result = assignTutor(getTutorWithSameSubject, getStudent)
 
         if result == False:
-            getEverything = return_all_rows('MOCK_TUTORS.csv')
-            print(getEverything)
-            print(getTutorWithSameSubject)
-            tutorList = (x for x in getEverything if not in getTutorWithSameSubject)
-            print(getEverything)
-            for i in getEverything:
-                for z in getTutorWithSameSubject:
-                    if i == z:
-                        print(z)
-                        getEverything.remove(z)
-            assignTutor(getEverything, getStudent)
-            return
+                getEverything = return_all_rows('MOCK_TUTORS.csv')
+                getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+                listToSearch = []
+                for i in getEverything:
+                    if i not in getTutorWithSameSubject:
+                        listToSearch.append(i)
+                assignTutor(listToSearch, getStudent)
+                return
+        return
 
     if action == "Reassign Student":
         getStudent = search_csv(nameinput, 'MOCK_DATA.csv')
 
         if getStudent[4] == 'none':
             messagebox.showinfo("Student Info", "Student has not yet been assigned a tutor.")
+            return
 
         getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
 
@@ -217,33 +217,29 @@ def returnStudent(*args):
         result = reassignStudent(getTutorWithSameSubject, getStudent)
 
         if result == False:
-            getEverything = return_all_rows('MOCK_TUTORS.csv')
-            print(getEverything)
-            for i in getEverything:
-                for z in getTutorWithSameSubject:
-                    if i == z:
-                        print(z)
-                        getEverything.remove(z)
-            reassignStudent(getEverything, getStudent)
-            return
+                getEverything = return_all_rows('MOCK_TUTORS.csv')
+                getTutorWithSameSubject = search_csv(getStudent[3], 'MOCK_TUTORS.csv', returnAll = True)
+                listToSearch = []
+                for i in getEverything:
+                    if i not in getTutorWithSameSubject:
+                        listToSearch.append(i)
+                reassignStudent(listToSearch, getStudent)
+                return
+        return
 
-
-
-
-        if action == "Delete Student":
-            foundStudent = False
-            for row in reader:
-                if (nameinput == row[0].lower()) or (nameinput == row[1].lower()) or (nameinput == (row[0].lower() + " " + row[1].lower()) or (nameinput == row[2])):
-                    row_to_find = get_row_from_name((row[0] + " " + row[1]))
-                    result = messagebox.askquestion("Delete Student", "Deleting student " + (row[0] + " " + row[1]) + ". Is this okay?")
-                    if result == "yes":
-                        messagebox.showinfo("Delete Student", "Student was deleted.")
-                        delete_student(row_to_find)
-                    else:
-                        messagebox.showinfo("Tutor Assignment", "Student was not deleted.")
-                    foundStudent = True
-            if not foundStudent:
-                messagebox.showinfo("Student Info", "Student Not Found")
+    if action == "Delete Student":
+        result = search_csv(nameinput, 'MOCK_DATA.csv')
+        if result:
+            name_to_delete = result[0] + " " + result[1]
+            row_number = get_row_from_name(name_to_delete)
+            confirmAssign = messagebox.askquestion("Delete Student", "Delete Student " + name_to_delete + "?")
+            if confirmAssign == "yes":
+                delete_student(int(row_number))
+                return True
+            else:
+                messagebox.showinfo("Tutor Assignment", "Tutor was not assigned.")
+                return False
+        return
 
 def returnTutor(*args):
     nameinput = str(tutorName.get()).lower()
