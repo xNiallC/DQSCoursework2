@@ -15,6 +15,10 @@ import os
 from sys import platform
 from tkinter import filedialog
 
+
+studentCSV = ""  # CSV of students' directory
+tutorCSV = ""  # CSV of tutors' directory
+
 # Take a tutor name, and the CSV names
 # Using this info, we iterate through the student CSV looking for the tutor's name
 # If found, we add 1 to count, then return the count at the end.
@@ -43,7 +47,24 @@ def assignAll():
 
         for i in lines:
             if i[4] == 'none':
-                assignTutor(tutors, i)
+
+                getTutorWithSameSubject = search_csv(i[3], tutorCSV, returnAll = True)
+
+                if len(getTutorWithSameSubject) == 0:
+                    getTutorWithSameSubject = return_all_rows(tutorCSV)
+
+                result = assignTutor(getTutorWithSameSubject, i)
+
+                if result == False:
+                    getEverything = return_all_rows(tutorCSV)
+                    getTutorWithSameSubject = search_csv(i[3], tutorCSV, returnAll = True)
+                    listToSearch = []
+                    for i in getEverything:
+                        if i not in getTutorWithSameSubject:
+                            listToSearch.append(i)
+                    assignTutor(listToSearch, i)
+
+				 #assignTutor(tutors, i)
         
         reader = csv.reader(open(studentCSV))  # open csv file
         lines2 = [l for l in reader if l != []]
@@ -144,7 +165,7 @@ def get_row_from_name(studentName):
 # If all goes well, we assign the student, otherwise return false.
 # Can only be done with unassigned students.
 def assignTutor(tutors, studentInfo):
-    tutors = tutors2
+    tutors = tutors
     studentYear = studentInfo[5]
     while len(tutors) != 0:
         randomTutor = []
@@ -329,7 +350,7 @@ def returnTutor(*args):
                 else:
                     emptyString += (i + ", \n")
                 instances += 1
-            messagebox.showinfo("Tutor Info", result1[0] + " " + result1[1] + " has following Students: \n" + emptyString)
+            messagebox.showinfo("Tutor Info", "Name: " + result1[0] + " " + result1[1] + " | " + "Staff No: " + result1[2] + " | " + "Subject: " + result1[3] + "\n" + "Students: \n" + emptyString)
             return
         elif result1:
             messagebox.showinfo("Tutor Info", result1[0] + " " + result1[1] + " has no students")
@@ -364,21 +385,21 @@ def delete_student(row_to_delete):
     writer.writerows(lines)
 
 
-studentCSV = "MOCK_DATA.csv"  # CSV of students' directory
-tutorCSV = "MOCK_TUTORS.csv"  # CSV of tutors' directory
+
 
 #Gets the directory of the Student CSV file chosen in the file explorer window
 def browse_student_csv():
     root.fileName = filedialog.askopenfilename(filetypes=(("Comma-seperated values", ".csv"), ("All files", "*")))
     global studentCSV
     studentCSV = root.fileName
+    messagebox.showinfo('File Upload', 'Student file successfully uploaded')
 
 #Gets the directory of the Tutor CSV file chosen in the file explorer window
 def browse_tutor_csv():
     root.fileName = filedialog.askopenfilename(filetypes=(("Comma-seperated values", ".csv"), ("All files", "*")))
     global tutorCSV
     tutorCSV = root.fileName
-
+    messagebox.showinfo('File Upload', 'Tutor file successfully uploaded')
 
 
 root = Tk()

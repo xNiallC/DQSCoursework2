@@ -1,12 +1,15 @@
-Helen,Rogers,1,comsci,Edward Johnson,1
-Cyrus,Dobbs,2,comsci,John Doe,2
-Evelyn,Williamson,3,comsci,Thomas Nash,3
-Thomas,Richards,4,comsci,Thomas Nash,1
-Deborah,Ferguson,6,comsci,Thomas Nash,2
-Debra,Rose,7,comsci,Jennifer Supla,3
-Louis,Carroll,8,drama,Jennifer Supla,1
-Samuel,Reyes,9,music,Edward Johnson,2
-Deborah,Morales,10,english,John Doe,3
-Cyrus,Bobbs,11,comsci,Jennifer Supla,1
-Cyrus,Knobbs,12,comsci,Adam Adamson,2
-Billy,Bilbo,13,potato,Adam Adamson,3
+Helen,Rogers,10001,SE,none,1
+Cyrus,Dobbs,10002,CS,none,2
+Evelyn,Williamson,10003,SE,none,3
+Thomas,Richards,10004,CS,none,1
+Deborah,Ferguson,10006,SE,none,2
+Flora,Rose,10007,CS,none,3
+Louis,Carroll,10008,CSForensics,none,1
+Samuel,Reyes,10009,CS,none,2
+Charlie,Morales,10010,SE,none,3
+William,Atlas,10011,CSForensics,none,1
+Victor,Freeman,10012,CS,none,2
+Billy,Potato,10013,CS,none,3
+Mike,Pence,10014,SE,none,1
+Sarah,Picker,10015,CSForensics,none,3
+Iggy,Price,10016,CS,none,2
